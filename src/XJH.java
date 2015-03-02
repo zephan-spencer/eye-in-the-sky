@@ -5,25 +5,52 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class XJH {
 
-    AddressConverter json;
+    public static void main(String[] args) {
 
-    public XJH() {
-        json = new AddressConverter();
+        run();
     }
 
-    public void main(String[] args) throws IOException {
-        XJH obj = new XJH();
-        obj.run();
-        json.convertToLatLong("1320 Edwards Dr. Downingtown, PA 19335");
-    }
+    public static void run() {
 
-    public void run() {
+        String csvFile = "/Users/Emil/Downloads/contact.csv";
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = ",";
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter("dataTEST.txt", "UTF-8");
 
+            br = new BufferedReader(new FileReader(csvFile));
+            while ((line = br.readLine()) != null) {
+
+                // use comma as separator
+                String[] data = line.split(cvsSplitBy);
+
+                writer.println();
+                writer.println("Last Name: " + data[8]);
+//                writer.println("First name: " + data[4]);
+//                writer.println("Phone: " + data[13]);
+                writer.println();
+            }
+
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (UnsupportedEncodingException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            writer.close();
+        }
         System.out.println("Done");
 
     }
