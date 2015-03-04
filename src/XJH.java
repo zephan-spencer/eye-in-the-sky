@@ -4,25 +4,27 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
 import org.json.JSONObject;
+import com.csvreader.CsvReader;
+import static java.lang.Thread.sleep;
 
 public class XJH {
 
     static int counter;
     static Scanner scanner;
     static URL url;
-    static BufferedReader csvReader;
+    static CsvReader csvReader;
     static BufferedWriter writer;
     static FileWriter writeRef;
     static String[] tokens;
     static String delims;
+    static String input;
     static String location;
     static String csvFile = "/Users/Emil/Downloads/contact.csv";
     static String line = "";
     static String cvsSplitBy = ",";
 
-    XJH() {
+    public XJH() {
 //      intializes all variables
-
         scanner = null;
         url = null;
         tokens = null;
@@ -40,27 +42,24 @@ public class XJH {
         run();
         writer.write(HTML.arrayClose());
         writer.write(HTML.getFooter());
-//      geocode();
         writer.close();
     }
 
     public static void run() throws Exception {
         csvReader = null;
         try {
-            csvReader = new BufferedReader(new FileReader(csvFile));
-            while ((line = csvReader.readLine()) != null) {
+            csvReader = new CsvReader(csvFile);
+            csvReader.readHeaders();
+            while (csvReader.readRecord()) {
                 delims = "[ ]+";
-                // use comma as separator
-                String[] data = line.split(cvsSplitBy);
-                // Skips the first line
-                tokens = data[24].split(delims);
                 location = "";
                 if (counter > 0 && counter <= 30) {
-//                    writer.println();
-//                    writer.println("Last Name: " + data[5]);
-//                    writer.println("First name: " + data[4]);
-//                    writer.println("Phone: " + data[13]);
-//                    writer.println("Address: " + data[24]);
+                    input = csvReader.get("Mailing Street");
+                    if (input != "") {
+                        System.out.println("Last Name: " + input);
+                    } else {
+                    }
+                    tokens = input.split(delims);
                     for (int i = 0; i < tokens.length; i++) {
                         if (i + 1 >= tokens.length) {
                             location = location + (tokens[i]);
@@ -78,14 +77,9 @@ public class XJH {
         } catch (UnsupportedEncodingException ex) {
         } catch (IOException ex) {
         } catch (ArrayIndexOutOfBoundsException eg) {
-        System.out.println("Taadaaah");
         } finally {
-            if (csvReader != null) {
-                try {
-                    csvReader.close();
-                } catch (IOException ex) {
-                }
-            }
+            System.out.println("Made it to close!");
+            csvReader.close();
         }
         System.out.println("Done");
 
