@@ -53,22 +53,23 @@ public class XJH {
             while (csvReader.readRecord()) {
                 delims = "[ ]+";
                 location = "";
-                if (counter > 0 && counter <= 30) {
+                if (counter > 0 && counter <= 500) {
                     input = csvReader.get("Mailing Street");
                     if (input != "") {
                         System.out.println("Last Name: " + input);
+                        tokens = input.split(delims);
+                        for (int i = 0; i < tokens.length; i++) {
+                            if (i + 1 >= tokens.length) {
+                                location = location + (tokens[i]);
+                            } else {
+                                location = location + (tokens[i] + "+");
+                            }
+                        }
+                        System.out.println(location);
+                        geocode(location, counter);
                     } else {
                     }
-                    tokens = input.split(delims);
-                    for (int i = 0; i < tokens.length; i++) {
-                        if (i + 1 >= tokens.length) {
-                            location = location + (tokens[i]);
-                        } else {
-                            location = location + (tokens[i] + "+");
-                        }
-                    }
-                    System.out.println(location);
-                    geocode(location, counter);
+
                 }
                 counter++;
             }
@@ -116,7 +117,7 @@ public class XJH {
         System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
         writer.write("[" + "'[name here]', " + loc.getDouble("lat") + ", "
                 + loc.getDouble("lng") + ", " + arrayNum + "],");
-//        Thread.sleep(100);
+        Thread.sleep(100);
     }
 ////////////////////////////////////////////////////////////////////////////////
 }
