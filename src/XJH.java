@@ -1,10 +1,5 @@
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
@@ -15,13 +10,19 @@ public class XJH {
     static int counter;
     static Scanner scanner;
     static URL url;
-    static PrintWriter writer;
+    static BufferedReader csvReader;
+    static BufferedWriter writer;
+    static FileWriter writeRef;
     static String[] tokens;
     static String delims;
     static String location;
+    static String csvFile = "/Users/Emil/Downloads/contact.csv";
+    static String line = "";
+    static String cvsSplitBy = ",";
 
     XJH() {
-//      clears all variables
+//      intializes all variables
+
         scanner = null;
         url = null;
         tokens = null;
@@ -31,32 +32,35 @@ public class XJH {
     }
 
     public static void main(String[] args) throws Exception {
-        writer = new PrintWriter("dataTEST.txt", "UTF-8");
+        writeRef = new FileWriter("dataTest.html");
+        writer = new BufferedWriter(writeRef);
+
+        writer.write(HTML.getHeader());
+        writer.write(HTML.arrayOpen());
         run();
+        writer.write(HTML.arrayClose());
+        writer.write(HTML.getFooter());
 //      geocode();
+        writer.close();
     }
 
     public static void run() throws Exception {
-
-        String csvFile = "/Users/Zephan/Downloads/contact.csv";
-        BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ",";
+        csvReader = null;
         try {
-            br = new BufferedReader(new FileReader(csvFile));
-            while ((line = br.readLine()) != null) {
+            csvReader = new BufferedReader(new FileReader(csvFile));
+            while ((line = csvReader.readLine()) != null) {
                 delims = "[ ]+";
                 // use comma as separator
                 String[] data = line.split(cvsSplitBy);
                 // Skips the first line
                 tokens = data[24].split(delims);
                 location = "";
-                if (counter > 0) {
-                    writer.println();
-                    writer.println("Last Name: " + data[5]);
-                    writer.println("First name: " + data[4]);
-                    writer.println("Phone: " + data[13]);
-                    writer.println("Address: " + data[24]);
+                if (counter > 0 && counter <= 30) {
+//                    writer.println();
+//                    writer.println("Last Name: " + data[5]);
+//                    writer.println("First name: " + data[4]);
+//                    writer.println("Phone: " + data[13]);
+//                    writer.println("Address: " + data[24]);
                     for (int i = 0; i < tokens.length; i++) {
                         if (i + 1 >= tokens.length) {
                             location = location + (tokens[i]);
@@ -65,32 +69,29 @@ public class XJH {
                         }
                     }
                     System.out.println(location);
-                    geocode(location);
-                    writer.println();
+                    geocode(location, counter);
                 }
                 counter++;
             }
 
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
         } catch (UnsupportedEncodingException ex) {
-            ex.printStackTrace();
         } catch (IOException ex) {
+        } catch (ArrayIndexOutOfBoundsException eg) {
+        System.out.println("Taadaaah");
         } finally {
-            if (br != null) {
+            if (csvReader != null) {
                 try {
-                    br.close();
+                    csvReader.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
                 }
             }
-            writer.close();
         }
         System.out.println("Done");
 
     }
 
-    public static void geocode(String address) throws Exception {
+    public static void geocode(String address, int arrayNum) throws Exception {
 ////////clears the variables////////////////////////////////////////////////////
         scanner = null;
         url = null;
@@ -119,7 +120,9 @@ public class XJH {
         System.out.println(res.getString("formatted_address"));
         JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
         System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
-        Thread.sleep(1000);
+        writer.write("[" + "'[name here]', " + loc.getDouble("lat") + ", "
+                + loc.getDouble("lng") + ", " + arrayNum + "],");
+//        Thread.sleep(100);
     }
 ////////////////////////////////////////////////////////////////////////////////
 }
