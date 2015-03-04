@@ -19,7 +19,7 @@ public class XJH {
     static String delims;
     static String input;
     static String location;
-    static String csvFile = "/Users/Emil/Downloads/contact.csv";
+    static String csvFile = "/Users/Zephan/Downloads/contact.csv";
     static String line = "";
     static String cvsSplitBy = ",";
 
@@ -53,7 +53,7 @@ public class XJH {
             while (csvReader.readRecord()) {
                 delims = "[ ]+";
                 location = "";
-                if (counter > 0 && counter <= 500) {
+                if (counter > 0) {
                     input = csvReader.get("Mailing Street");
                     if (input != "") {
                         System.out.println("Last Name: " + input);
@@ -90,26 +90,22 @@ public class XJH {
 ////////clears the variables////////////////////////////////////////////////////
         scanner = null;
         url = null;
-////////////////////////////////////////////////////////////////////////////////
 ////////builds a URL////////////////////////////////////////////////////////////
         String googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address;
         URLEncoder.encode(googleURL, "UTF-8");
         url = new URL(googleURL);
         scanner = new Scanner(url.openStream());
-////////////////////////////////////////////////////////////////////////////////
 ////////read from the URL///////////////////////////////////////////////////////
         String str = new String();
         while (scanner.hasNext()) {
             str += scanner.nextLine();
         }
         scanner.close();
-////////////////////////////////////////////////////////////////////////////////
 ////////build a JSON object/////////////////////////////////////////////////////
         JSONObject obj = new JSONObject(str);
         if (!obj.getString("status").equals("OK")) {
             return;
         }
-////////////////////////////////////////////////////////////////////////////////
 ////////get the first result////////////////////////////////////////////////////
         JSONObject res = obj.getJSONArray("results").getJSONObject(0);
         System.out.println(res.getString("formatted_address"));
@@ -117,7 +113,6 @@ public class XJH {
         System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
         writer.write("[" + "'[name here]', " + loc.getDouble("lat") + ", "
                 + loc.getDouble("lng") + ", " + arrayNum + "],");
-        Thread.sleep(100);
+//        Thread.sleep(100);
     }
-////////////////////////////////////////////////////////////////////////////////
 }
