@@ -1,4 +1,3 @@
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -18,8 +17,6 @@ public class AlreadyWrittenChecker {
 
     public static boolean newFile;
 
-    private static String addressCache;
-    
     private static int counter;
 
     public static void alreadyWrittenCheckerInit() throws IOException {
@@ -42,11 +39,7 @@ public class AlreadyWrittenChecker {
     }
 
     public static String getAddress() throws IOException {
-        addressCache = "";
-        
-        addressCache = alreadyWrittenReader.next();
-        
-        return addressCache;
+        return alreadyWrittenReader.next();
     }
 
     public static void closeWrittenChecker() throws IOException {
@@ -58,5 +51,9 @@ public class AlreadyWrittenChecker {
     public static void initScanner() throws FileNotFoundException {
         alreadyWrittenReader = new Scanner(new File(parsedData));
         alreadyWrittenReader.useDelimiter(",");
+    }
+
+    public static void flushWriter() throws IOException {
+        alreadyWrittenWriter.flush();
     }
 }
