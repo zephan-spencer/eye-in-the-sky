@@ -9,48 +9,65 @@ import static java.lang.Thread.sleep;
 
 public class XJH {
 
-    static int counter;
+////////////////////////////////////////////////////////////////////////////////
     static Scanner scanner;
+////////////////////////////////////////////////////////////////////////////////
     static URL url;
+////////////////////////////////////////////////////////////////////////////////
     static CsvReader csvReader;
+////////////////////////////////////////////////////////////////////////////////
     static BufferedWriter writer;
+////////////////////////////////////////////////////////////////////////////////    
     static FileWriter writeRef;
+////////////////////////////////////////////////////////////////////////////////
+    static Scanner mainScanner;
+////////////////////////////////////////////////////////////////////////////////
     static String[] tokens;
+////////////////////////////////////////////////////////////////////////////////
+    static int counter;
+////////////////////////////////////////////////////////////////////////////////
     static String delims;
     static String input;
     static String location;
-    static String csvFile = "/Users/Zephan/Downloads/contact.csv";
+    static String csvFile = "/Users/Emil/Downloads/contact.csv";
     static String line = "";
     static String cvsSplitBy = ",";
     static String name;
 
-    public XJH() {
-//      intializes all variables
-        name = null;
-        scanner = null;
-        url = null;
-        tokens = null;
-        delims = null;
-        location = null;
-        counter = 0;
-    }
+    static char quotes = '"';
 
     public static void main(String[] args) throws Exception {
-        writeRef = new FileWriter("dataTest.html");
-        writer = new BufferedWriter(writeRef);
-        Scanner eInput = new Scanner(System.in);
-        System.out.println("Run the program? yes or no?");
-        if (eInput.hasNext("Yes") || eInput.hasNext("yes")) {
-        } else {
-            return;
-        }
+        init();
 
+//        System.out.println("Run the program? yes or no?");
+//        if (eInput.hasNext("Yes") || eInput.hasNext("yes")) {
+//        } else {
+//            return;
+//        }
         writer.write(HTML.getHeader());
         writer.write(HTML.arrayOpen());
         run();
         writer.write(HTML.arrayClose());
         writer.write(HTML.getFooter());
         writer.close();
+        AlreadyWrittenChecker.closeWrittenChecker();
+    }
+
+    public static void init() throws IOException {
+////////intializes all variables////////////////////////////////////////////////
+        name = null;
+        scanner = null;
+        url = null;
+        tokens = null;
+        delims = null;
+        location = null;
+////////////////////////////////////////////////////////////////////////////////        
+        counter = 0;
+////////////////////////////////////////////////////////////////////////////////        
+        writeRef = new FileWriter("dataTest.html");
+        writer = new BufferedWriter(writeRef);
+        mainScanner = new Scanner(System.in);
+        AlreadyWrittenChecker.alreadyWrittenCheckerInit();
     }
 
     public static void run() throws Exception {
@@ -58,37 +75,45 @@ public class XJH {
         try {
             csvReader = new CsvReader(csvFile);
             csvReader.readHeaders();
-            for (int i = 0; i < tokens.length; i++) {
-                csvReader.getDelimiter();
-            }
+//            for (int i = 0; i < tokens.length; i++) {
+//                csvReader.getDelimiter();
+//            }
             while (csvReader.readRecord()) {
                 delims = "[ ]+";
                 location = "";
                 name = "";
-                if (counter > 0 && counter <= 100) {
-                    input = csvReader.get("Mailing Street");
-                    if (input != "") {
-
-                        if (csvReader.get("Last Name").contains("'")) {
-                            name = csvReader.get("First Name");
-                        } else if (csvReader.get("First Name").contains("'")) {
-                            name = csvReader.get("Last Name");
-                        } else {
-                            name = csvReader.get("First Name") + ", " + csvReader.get("Last Name");
-                        }
-                        tokens = input.split(delims);
-                        for (int i = 0; i < tokens.length; i++) {
-                            if (i + 1 >= tokens.length) {
-                                location = location + (tokens[i]);
-                            } else {
-                                location = location + (tokens[i] + "+");
-                            }
-                        }
-                        System.out.println(location);
-                        geocode(location, name, counter);
+                input = csvReader.get("Mailing Street");
+                if (counter > 0 && !input.equals("")) {
+                    if (csvReader.get("Last Name").contains("'")) {
+                        name = csvReader.get("First Name");
+                    } else if (csvReader.get("First Name").contains("'")) {
+                        name = csvReader.get("Last Name");
                     } else {
+                        name = csvReader.get("First Name") + ", " + csvReader.get("Last Name");
                     }
-
+                    tokens = input.split(delims);
+                    for (int i = 0; i < tokens.length; i++) {
+                        if (i + 1 >= tokens.length) {
+                            location = location + (tokens[i]);
+                        } else {
+                            location = location + (tokens[i] + "+");
+                        }
+                    }
+                    if (!AlreadyWrittenChecker.newFile) {
+                        if (AlreadyWrittenChecker.getAddress().equals(location)) {
+                            System.out.println("Already have this address in: " + location);
+                            //geocode(location, name, counter);
+                        } else {
+                            System.out.println("No match :( " + location);
+                            AlreadyWrittenChecker.addToList(location);
+                        }
+                    } else {
+                        if (location.contains(",")) {
+                            location = quotes + location + quotes;
+//                        System.out.println(location);
+                        }
+                        AlreadyWrittenChecker.addToList(location);
+                    }
                 }
                 counter++;
             }
