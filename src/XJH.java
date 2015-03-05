@@ -22,9 +22,11 @@ public class XJH {
     static String csvFile = "/Users/Zephan/Downloads/contact.csv";
     static String line = "";
     static String cvsSplitBy = ",";
+    static String name;
 
     public XJH() {
 //      intializes all variables
+        name = null;
         scanner = null;
         url = null;
         tokens = null;
@@ -36,6 +38,12 @@ public class XJH {
     public static void main(String[] args) throws Exception {
         writeRef = new FileWriter("dataTest.html");
         writer = new BufferedWriter(writeRef);
+        Scanner eInput = new Scanner(System.in);
+        System.out.println("Run the program? yes or no?");
+        if (eInput.hasNext("Yes") || eInput.hasNext("yes")) {
+        } else {
+            return;
+        }
 
         writer.write(HTML.getHeader());
         writer.write(HTML.arrayOpen());
@@ -50,13 +58,24 @@ public class XJH {
         try {
             csvReader = new CsvReader(csvFile);
             csvReader.readHeaders();
+            for (int i = 0; i < tokens.length; i++) {
+                csvReader.getDelimiter();
+            }
             while (csvReader.readRecord()) {
                 delims = "[ ]+";
                 location = "";
-                if (counter > 0) {
+                name = "";
+                if (counter > 0 && counter <= 100) {
                     input = csvReader.get("Mailing Street");
                     if (input != "") {
-                        System.out.println("Last Name: " + input);
+
+                        if (csvReader.get("Last Name").contains("'")) {
+                            name = csvReader.get("First Name");
+                        } else if (csvReader.get("First Name").contains("'")) {
+                            name = csvReader.get("Last Name");
+                        } else {
+                            name = csvReader.get("First Name") + ", " + csvReader.get("Last Name");
+                        }
                         tokens = input.split(delims);
                         for (int i = 0; i < tokens.length; i++) {
                             if (i + 1 >= tokens.length) {
@@ -66,7 +85,7 @@ public class XJH {
                             }
                         }
                         System.out.println(location);
-                        geocode(location, counter);
+                        geocode(location, name, counter);
                     } else {
                     }
 
@@ -86,7 +105,7 @@ public class XJH {
 
     }
 
-    public static void geocode(String address, int arrayNum) throws Exception {
+    public static void geocode(String address, String name, int arrayNum) throws Exception {
 ////////clears the variables////////////////////////////////////////////////////
         scanner = null;
         url = null;
@@ -111,7 +130,7 @@ public class XJH {
         System.out.println(res.getString("formatted_address"));
         JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
         System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
-        writer.write("[" + "'[name here]', " + loc.getDouble("lat") + ", "
+        writer.write("[" + "'" + name + "', " + loc.getDouble("lat") + ", "
                 + loc.getDouble("lng") + ", " + arrayNum + "],");
 //        Thread.sleep(100);
     }
