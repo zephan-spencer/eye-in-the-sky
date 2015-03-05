@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class AlreadyWrittenChecker {
 
-    private static String parsedData = "alreadyScanned.csv";
+    private static String parsedData = "alreadyScanned.txt";
 ////////////////////////////////////////////////////////////////////////////////
     private static FileWriter alreadyWrittenWriter;
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ public class AlreadyWrittenChecker {
     }
 
     public static void addToList(String address) throws IOException {
-        alreadyWrittenWriter.write(address + ",");
+        alreadyWrittenWriter.write(address + ":");
     }
 
     public static String getAddress() throws IOException {
@@ -50,7 +50,7 @@ public class AlreadyWrittenChecker {
 
     public static void initScanner() throws FileNotFoundException {
         alreadyWrittenReader = new Scanner(new File(parsedData));
-        alreadyWrittenReader.useDelimiter(",");
+        alreadyWrittenReader.useDelimiter(":");
     }
 
     public static void flushWriter() throws IOException {

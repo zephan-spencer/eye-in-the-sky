@@ -108,10 +108,6 @@ public class XJH {
                             AlreadyWrittenChecker.addToList(location);
                         }
                     } else {
-                        if (location.contains(",")) {
-                            location = quotes + location + quotes;
-//                        System.out.println(location);
-                        }
                         AlreadyWrittenChecker.addToList(location);
                     }
                 }
