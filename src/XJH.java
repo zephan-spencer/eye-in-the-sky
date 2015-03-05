@@ -33,23 +33,29 @@ public class XJH {
     static String line = "";
     static String cvsSplitBy = ",";
     static String name;
-
+////////////////////////////////////////////////////////////////////////////////
     static char quotes = '"';
 
     public static void main(String[] args) throws Exception {
         init();
 
-//        System.out.println("Run the program? yes or no?");
-//        if (eInput.hasNext("Yes") || eInput.hasNext("yes")) {
-//        } else {
-//            return;
-//        }
-        writer.write(HTML.getHeader());
-        writer.write(HTML.arrayOpen());
-        run();
-        writer.write(HTML.arrayClose());
-        writer.write(HTML.getFooter());
-        writer.close();
+        System.out.println("Would you like to create a new file? Yes/No");
+        if (mainScanner.hasNext("yes") || mainScanner.hasNext("Yes")) {
+            GlobalVariables.newFile = true;
+            initXJHWriter();
+            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+            writer.write(HTML.getHeader());
+            writer.write(HTML.arrayOpen());
+            run();
+            writer.write(HTML.arrayClose());
+            writer.write(HTML.getFooter());
+            writer.close();
+        } else {
+            GlobalVariables.newFile = false;
+            initXJHWriter();
+            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+            run();
+        }
         AlreadyWrittenChecker.closeWrittenChecker();
     }
 
@@ -64,10 +70,7 @@ public class XJH {
 ////////////////////////////////////////////////////////////////////////////////        
         counter = 0;
 ////////////////////////////////////////////////////////////////////////////////        
-        writeRef = new FileWriter("dataTest.html");
-        writer = new BufferedWriter(writeRef);
         mainScanner = new Scanner(System.in);
-        AlreadyWrittenChecker.alreadyWrittenCheckerInit();
     }
 
     public static void run() throws Exception {
@@ -83,7 +86,7 @@ public class XJH {
                 location = "";
                 name = "";
                 input = csvReader.get("Mailing Street");
-                if (counter > 0 && !input.equals("")) {
+                if (counter > 0 && !input.equals("") && counter <= 60) {
                     if (csvReader.get("Last Name").contains("'")) {
                         name = csvReader.get("First Name");
                     } else if (csvReader.get("First Name").contains("'")) {
@@ -99,16 +102,17 @@ public class XJH {
                             location = location + (tokens[i] + "+");
                         }
                     }
-                    if (!AlreadyWrittenChecker.newFile) {
+                    if (!GlobalVariables.newFile) {
                         if (AlreadyWrittenChecker.getAddress().equals(location)) {
                             System.out.println("Already have this address in: " + location);
-                            //geocode(location, name, counter);
                         } else {
                             System.out.println("No match :( " + location);
                             AlreadyWrittenChecker.addToList(location);
+                            geocode(location, name, counter);
                         }
                     } else {
                         AlreadyWrittenChecker.addToList(location);
+                        geocode(location, name, counter);
                     }
                 }
                 counter++;
@@ -127,32 +131,72 @@ public class XJH {
     }
 
     public static void geocode(String address, String name, int arrayNum) throws Exception {
+//      Will add the variation of what this does soon... for now it is the same however.
+        if (GlobalVariables.newFile) {
 ////////clears the variables////////////////////////////////////////////////////
-        scanner = null;
-        url = null;
+            scanner = null;
+            url = null;
 ////////builds a URL////////////////////////////////////////////////////////////
-        String googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address;
-        URLEncoder.encode(googleURL, "UTF-8");
-        url = new URL(googleURL);
-        scanner = new Scanner(url.openStream());
+            String googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address;
+            URLEncoder.encode(googleURL, "UTF-8");
+            url = new URL(googleURL);
+            scanner = new Scanner(url.openStream());
 ////////read from the URL///////////////////////////////////////////////////////
-        String str = new String();
-        while (scanner.hasNext()) {
-            str += scanner.nextLine();
-        }
-        scanner.close();
+            String str = new String();
+            while (scanner.hasNext()) {
+                str += scanner.nextLine();
+            }
+            scanner.close();
 ////////build a JSON object/////////////////////////////////////////////////////
-        JSONObject obj = new JSONObject(str);
-        if (!obj.getString("status").equals("OK")) {
-            return;
-        }
+            JSONObject obj = new JSONObject(str);
+            if (!obj.getString("status").equals("OK")) {
+                return;
+            }
 ////////get the first result////////////////////////////////////////////////////
-        JSONObject res = obj.getJSONArray("results").getJSONObject(0);
-        System.out.println(res.getString("formatted_address"));
-        JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
-        System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
-        writer.write("[" + "'" + name + "', " + loc.getDouble("lat") + ", "
-                + loc.getDouble("lng") + ", " + arrayNum + "],");
+            JSONObject res = obj.getJSONArray("results").getJSONObject(0);
+            System.out.println(res.getString("formatted_address"));
+            JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
+            System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
+            writer.write("[" + "'" + name + "', " + loc.getDouble("lat") + ", "
+                    + loc.getDouble("lng") + ", " + arrayNum + "],");
 //        Thread.sleep(100);
+        } else {
+////////clears the variables////////////////////////////////////////////////////
+            scanner = null;
+            url = null;
+////////builds a URL////////////////////////////////////////////////////////////
+            String googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address;
+            URLEncoder.encode(googleURL, "UTF-8");
+            url = new URL(googleURL);
+            scanner = new Scanner(url.openStream());
+////////read from the URL///////////////////////////////////////////////////////
+            String str = new String();
+            while (scanner.hasNext()) {
+                str += scanner.nextLine();
+            }
+            scanner.close();
+////////build a JSON object/////////////////////////////////////////////////////
+            JSONObject obj = new JSONObject(str);
+            if (!obj.getString("status").equals("OK")) {
+                return;
+            }
+////////get the first result////////////////////////////////////////////////////
+            JSONObject res = obj.getJSONArray("results").getJSONObject(0);
+            System.out.println(res.getString("formatted_address"));
+            JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
+            System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
+            writer.write("[" + "'" + name + "', " + loc.getDouble("lat") + ", "
+                    + loc.getDouble("lng") + ", " + arrayNum + "],");
+//        Thread.sleep(100);
+        }
+    }
+
+    public static void initXJHWriter() throws IOException {
+        if (GlobalVariables.newFile) {
+            writeRef = new FileWriter("dataTest.html", false);
+        } else {
+            writeRef = new FileWriter("dataTest.html", true);
+        }
+        writer = new BufferedWriter(writeRef);
     }
 }
