@@ -28,7 +28,7 @@ public class XJH {
     static String delims;
     static String input;
     static String location;
-    static String csvFile = "/Users/Zephan/Downloads/contact.csv";
+    static String csvFile = "/Users/Emil/Downloads/contact.csv";
     static String line = "";
     static String cvsSplitBy = ",";
     static String name;
@@ -134,36 +134,6 @@ public class XJH {
     }
 
     public static void geocode(String address, String name, int arrayNum) throws Exception {
-//      Will add the variation of what this does soon... for now it is the same however.
-        if (GlobalVariables.newFile) {
-////////clears the variables////////////////////////////////////////////////////
-            scanner = null;
-            url = null;
-////////builds a URL////////////////////////////////////////////////////////////
-            String googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address;
-            URLEncoder.encode(googleURL, "UTF-8");
-            url = new URL(googleURL);
-            scanner = new Scanner(url.openStream());
-////////read from the URL///////////////////////////////////////////////////////
-            String str = new String();
-            while (scanner.hasNext()) {
-                str += scanner.nextLine();
-            }
-            scanner.close();
-////////build a JSON object/////////////////////////////////////////////////////
-            JSONObject obj = new JSONObject(str);
-            if (!obj.getString("status").equals("OK")) {
-                return;
-            }
-////////get the first result////////////////////////////////////////////////////
-            JSONObject res = obj.getJSONArray("results").getJSONObject(0);
-            System.out.println(res.getString("formatted_address"));
-            JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
-            System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
-            writer.write("[" + "'" + name + "', " + loc.getDouble("lat") + ", "
-                    + loc.getDouble("lng") + ", " + arrayNum + "],");
-//        Thread.sleep(100);
-        } else {
 ////////clears the variables////////////////////////////////////////////////////
             scanner = null;
             url = null;
@@ -191,7 +161,6 @@ public class XJH {
             output = output + "[" + "'" + name + "', " + loc.getDouble("lat") + ", "
                     + loc.getDouble("lng") + ", " + arrayNum + "],";
 //        Thread.sleep(100);
-        }
     }
 
     public static void initXJHWriter() throws IOException {
