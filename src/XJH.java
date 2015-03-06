@@ -32,6 +32,7 @@ public class XJH {
     static String line = "";
     static String cvsSplitBy = ",";
     static String name;
+    static String output;
 ////////////////////////////////////////////////////////////////////////////////
     static char quotes = '"';
 
@@ -43,29 +44,32 @@ public class XJH {
             GlobalVariables.newFile = true;
             initXJHWriter();
             AlreadyWrittenChecker.alreadyWrittenCheckerInit();
-            writer.write(HTML.getHeader());
-            writer.write(HTML.arrayOpen());
             run();
-            writer.write(HTML.arrayClose());
-            writer.write(HTML.getFooter());
-            writer.close();
         } else {
             GlobalVariables.newFile = false;
-            initXJHWriter();
             AlreadyWrittenChecker.alreadyWrittenCheckerInit();
             run();
+            initXJHWriter();
         }
+        writer.write(HTML.getHeader());
+        writer.write(HTML.arrayOpen());
+        writer.write(output);
+        writer.write(HTML.arrayClose());
+        writer.write(HTML.getFooter());
+        writer.close();
         AlreadyWrittenChecker.closeWrittenChecker();
     }
 
     public static void init() throws IOException {
 ////////intializes all variables////////////////////////////////////////////////
-        name = null;
         scanner = null;
         url = null;
         tokens = null;
-        delims = null;
-        location = null;
+////////////////////////////////////////////////////////////////////////////////
+        delims = "";
+        location = "";
+        output = "";
+        name = "";
 ////////////////////////////////////////////////////////////////////////////////        
         counter = 0;
 ////////////////////////////////////////////////////////////////////////////////        
@@ -184,18 +188,14 @@ public class XJH {
             System.out.println(res.getString("formatted_address"));
             JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
             System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
-            writer.write("[" + "'" + name + "', " + loc.getDouble("lat") + ", "
-                    + loc.getDouble("lng") + ", " + arrayNum + "],");
+            output = output + "[" + "'" + name + "', " + loc.getDouble("lat") + ", "
+                    + loc.getDouble("lng") + ", " + arrayNum + "],";
 //        Thread.sleep(100);
         }
     }
 
     public static void initXJHWriter() throws IOException {
-        if (GlobalVariables.newFile) {
-            writeRef = new FileWriter("dataTest.html", false);
-        } else {
-            writeRef = new FileWriter("Data2.html", false);
-        }
+        writeRef = new FileWriter("dataTest.html", false);
         writer = new BufferedWriter(writeRef);
     }
 }
