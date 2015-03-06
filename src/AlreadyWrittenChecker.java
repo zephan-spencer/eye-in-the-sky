@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class AlreadyWrittenChecker {
@@ -30,8 +31,22 @@ public class AlreadyWrittenChecker {
         alreadyWrittenWriter.write(address + ":");
     }
 
-    public static String getAddress() throws IOException {
-        return alreadyWrittenReader.next();
+    public static boolean getAddress(String location) throws FileNotFoundException {
+        try {
+            alreadyWrittenReader = new Scanner(new File(parsedData));
+            alreadyWrittenReader.useDelimiter(":");
+            while (true) {
+                String temp = "";
+                temp = alreadyWrittenReader.next();
+                if (!location.equals(temp)) {
+                } else {
+                    return true;
+                }
+            }
+
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
     public static void closeWrittenChecker() throws IOException {

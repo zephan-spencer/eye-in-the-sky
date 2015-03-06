@@ -8,7 +8,6 @@ import com.csvreader.CsvReader;
 import static java.lang.Thread.sleep;
 
 public class XJH {
-
 ////////////////////////////////////////////////////////////////////////////////
     static Scanner scanner;
 ////////////////////////////////////////////////////////////////////////////////
@@ -29,7 +28,7 @@ public class XJH {
     static String delims;
     static String input;
     static String location;
-    static String csvFile = "/Users/Emil/Downloads/contact.csv";
+    static String csvFile = "/Users/Zephan/Downloads/contact.csv";
     static String line = "";
     static String cvsSplitBy = ",";
     static String name;
@@ -86,7 +85,7 @@ public class XJH {
                 location = "";
                 name = "";
                 input = csvReader.get("Mailing Street");
-                if (counter > 0 && !input.equals("") && counter <= 60) {
+                if (counter > 0 && !input.equals("") && counter <= 20) {
                     if (csvReader.get("Last Name").contains("'")) {
                         name = csvReader.get("First Name");
                     } else if (csvReader.get("First Name").contains("'")) {
@@ -103,7 +102,7 @@ public class XJH {
                         }
                     }
                     if (!GlobalVariables.newFile) {
-                        if (AlreadyWrittenChecker.getAddress().equals(location)) {
+                        if (AlreadyWrittenChecker.getAddress(location)) {
                             System.out.println("Already have this address in: " + location);
                         } else {
                             System.out.println("No match :( " + location);
@@ -195,7 +194,7 @@ public class XJH {
         if (GlobalVariables.newFile) {
             writeRef = new FileWriter("dataTest.html", false);
         } else {
-            writeRef = new FileWriter("dataTest.html", true);
+            writeRef = new FileWriter("Data2.html", false);
         }
         writer = new BufferedWriter(writeRef);
     }
