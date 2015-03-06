@@ -4,6 +4,7 @@ public class HTML {
     public static String arrayOpen() {
         return "var places = [ ";
     }
+
     public static String arrayClose() {
         return "];";
     }
@@ -19,10 +20,6 @@ public class HTML {
                 + "      src=\"https://maps.googleapis.com/maps/api/js?\">\n"
                 + "    </script>\n"
                 + "    <script type=\"text/javascript\">\n"
-                + "// The following example creates complex markers to indicate beaches near\n"
-                + "// Sydney, NSW, Australia. Note that the anchor is set to\n"
-                + "// (0,32) to correspond to the base of the flagpole.\n"
-                + "\n"
                 + "function initialize() {\n"
                 + "  var mapOptions = {\n"
                 + "    zoom: 4,\n"

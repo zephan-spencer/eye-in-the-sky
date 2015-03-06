@@ -37,27 +37,28 @@ public class XJH {
     static char quotes = '"';
 
     public static void main(String[] args) throws Exception {
-        init();
-
-        System.out.println("Would you like to create a new file? Yes/No");
-        if (mainScanner.hasNext("yes") || mainScanner.hasNext("Yes")) {
-            GlobalVariables.newFile = true;
-            initXJHWriter();
-            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
-            run();
-        } else {
-            GlobalVariables.newFile = false;
-            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
-            run();
-            initXJHWriter();
-        }
-        writer.write(HTML.getHeader());
-        writer.write(HTML.arrayOpen());
-        writer.write(output);
-        writer.write(HTML.arrayClose());
-        writer.write(HTML.getFooter());
-        writer.close();
-        AlreadyWrittenChecker.closeWrittenChecker();
+//        init();
+//
+//        System.out.println("Would you like to create a new file? Yes/No");
+//        if (mainScanner.hasNext("yes") || mainScanner.hasNext("Yes")) {
+//            GlobalVariables.newFile = true;
+//            initXJHWriter();
+//            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+//            run();
+//        } else {
+//            GlobalVariables.newFile = false;
+//            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+//            run();
+//            initXJHWriter();
+//        }
+//        writer.write(HTML.getHeader());
+//        writer.write(HTML.arrayOpen());
+//        writer.write(output);
+//        writer.write(HTML.arrayClose());
+//        writer.write(HTML.getFooter());
+//        writer.close();
+//        AlreadyWrittenChecker.closeWrittenChecker();
+        System.out.println(HTML_Parser.parseHTML());
     }
 
     public static void init() throws IOException {
@@ -115,7 +116,7 @@ public class XJH {
                         }
                     } else {
                         AlreadyWrittenChecker.addToList(location);
-                        geocode(location, name, counter);
+                        geocode(location, name, counter - 1);
                     }
                 }
                 counter++;
