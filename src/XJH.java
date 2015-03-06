@@ -8,7 +8,6 @@ import com.csvreader.CsvReader;
 import static java.lang.Thread.sleep;
 
 public class XJH {
-////////////////////////////////////////////////////////////////////////////////
 
     static Scanner scanner;
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,8 +98,8 @@ public class XJH {
                 location = "";
                 name = "";
                 input = csvReader.get("Mailing Street");
-                if (counter > 0 && !input.equals("") && counter <= 150) {
-                    name = csvReader.get("First Name") + ", " + csvReader.get("Last Name");
+                if (counter > 0 && !input.equals("") && counter <= 4000) {
+                    name = csvReader.get("Last Name") + ", " + csvReader.get("First Name");
 
                     tokens = input.split(delims);
                     for (int i = 0; i < tokens.length; i++) {
