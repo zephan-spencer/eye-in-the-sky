@@ -9,6 +9,7 @@ import static java.lang.Thread.sleep;
 
 public class XJH {
 ////////////////////////////////////////////////////////////////////////////////
+
     static Scanner scanner;
 ////////////////////////////////////////////////////////////////////////////////
     static URL url;
@@ -37,28 +38,36 @@ public class XJH {
     static char quotes = '"';
 
     public static void main(String[] args) throws Exception {
-//        init();
-//
-//        System.out.println("Would you like to create a new file? Yes/No");
-//        if (mainScanner.hasNext("yes") || mainScanner.hasNext("Yes")) {
-//            GlobalVariables.newFile = true;
-//            initXJHWriter();
-//            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
-//            run();
-//        } else {
-//            GlobalVariables.newFile = false;
-//            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
-//            run();
-//            initXJHWriter();
-//        }
-//        writer.write(HTML.getHeader());
-//        writer.write(HTML.arrayOpen());
-//        writer.write(output);
-//        writer.write(HTML.arrayClose());
-//        writer.write(HTML.getFooter());
-//        writer.close();
-//        AlreadyWrittenChecker.closeWrittenChecker();
-        System.out.println(HTML_Parser.parseHTML());
+        init();
+
+        System.out.println("Would you like to create a new file? Yes/No");
+        if (mainScanner.hasNext("yes") || mainScanner.hasNext("Yes")) {
+            GlobalVariables.newFile = true;
+            initXJHWriter();
+            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+            run(1);
+            writer.write(HTML.getHeader());
+            writer.write(HTML.newArrayOpen());
+            writer.write(output);
+            writer.write(HTML.arrayClose());
+            writer.write(HTML.getFooter());
+            writer.close();
+        } else {
+            GlobalVariables.newFile = false;
+            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+            HTML_Parser.parseHTML();
+            run(HTML_Parser.getMaxArrayNum());
+            initXJHWriter();
+            writer.write(HTML.getHeader());
+            writer.write(HTML.previousArrayOpen());
+            writer.write(HTML_Parser.getPreviousCords() + output);
+            writer.write(HTML.arrayClose());
+            writer.write(HTML.getFooter());
+            writer.close();
+        }
+        AlreadyWrittenChecker.closeWrittenChecker();
+        System.out.println(HTML_Parser.getPreviousCords());
+        System.out.println(HTML_Parser.getMaxArrayNum());
     }
 
     public static void init() throws IOException {
@@ -77,7 +86,7 @@ public class XJH {
         mainScanner = new Scanner(System.in);
     }
 
-    public static void run() throws Exception {
+    public static void run(int ArrayNum) throws Exception {
         csvReader = null;
         try {
             csvReader = new CsvReader(csvFile);
@@ -90,14 +99,9 @@ public class XJH {
                 location = "";
                 name = "";
                 input = csvReader.get("Mailing Street");
-                if (counter > 0 && !input.equals("") && counter <= 20) {
-                    if (csvReader.get("Last Name").contains("'")) {
-                        name = csvReader.get("First Name");
-                    } else if (csvReader.get("First Name").contains("'")) {
-                        name = csvReader.get("Last Name");
-                    } else {
-                        name = csvReader.get("First Name") + ", " + csvReader.get("Last Name");
-                    }
+                if (counter > 0 && !input.equals("") && counter <= 150) {
+                    name = csvReader.get("First Name") + ", " + csvReader.get("Last Name");
+
                     tokens = input.split(delims);
                     for (int i = 0; i < tokens.length; i++) {
                         if (i + 1 >= tokens.length) {
@@ -110,13 +114,13 @@ public class XJH {
                         if (AlreadyWrittenChecker.getAddress(location)) {
                             System.out.println("Already have this address in: " + location);
                         } else {
-                            System.out.println("No match :( " + location);
+//                            System.out.println("No match :( " + location);
                             AlreadyWrittenChecker.addToList(location);
                             geocode(location, name, counter);
                         }
                     } else {
                         AlreadyWrittenChecker.addToList(location);
-                        geocode(location, name, counter - 1);
+                        geocode(location, name, ArrayNum + 1);
                     }
                 }
                 counter++;
@@ -136,31 +140,32 @@ public class XJH {
 
     public static void geocode(String address, String name, int arrayNum) throws Exception {
 ////////clears the variables////////////////////////////////////////////////////
-            scanner = null;
-            url = null;
+        scanner = null;
+        url = null;
 ////////builds a URL////////////////////////////////////////////////////////////
-            String googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address;
-            URLEncoder.encode(googleURL, "UTF-8");
-            url = new URL(googleURL);
-            scanner = new Scanner(url.openStream());
+        String googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address;
+        URLEncoder.encode(googleURL, "UTF-8");
+        url = new URL(googleURL);
+        scanner = new Scanner(url.openStream());
 ////////read from the URL///////////////////////////////////////////////////////
-            String str = new String();
-            while (scanner.hasNext()) {
-                str += scanner.nextLine();
-            }
-            scanner.close();
+        String str = new String();
+        while (scanner.hasNext()) {
+            str += scanner.nextLine();
+        }
+        scanner.close();
 ////////build a JSON object/////////////////////////////////////////////////////
-            JSONObject obj = new JSONObject(str);
-            if (!obj.getString("status").equals("OK")) {
-                return;
-            }
+        JSONObject obj = new JSONObject(str);
+        if (!obj.getString("status").equals("OK")) {
+            return;
+        }
 ////////get the first result////////////////////////////////////////////////////
-            JSONObject res = obj.getJSONArray("results").getJSONObject(0);
-            System.out.println(res.getString("formatted_address"));
-            JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
-            System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
-            output = output + "[" + "'" + name + "', " + loc.getDouble("lat") + ", "
-                    + loc.getDouble("lng") + ", " + arrayNum + "],";
+        JSONObject res = obj.getJSONArray("results").getJSONObject(0);
+        System.out.println(res.getString("formatted_address"));
+        JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
+        System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
+        output = output + "[" + "\"" + name + ""
+                + "\", " + loc.getDouble("lat") + ", "
+                + loc.getDouble("lng") + ", " + arrayNum + "],";
 //        Thread.sleep(100);
     }
 

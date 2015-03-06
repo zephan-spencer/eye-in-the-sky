@@ -1,8 +1,11 @@
 
 public class HTML {
 
-    public static String arrayOpen() {
-        return "var places = [ ";
+    public static String newArrayOpen() {
+        return "var places = [";
+    }
+    public static String previousArrayOpen() {
+        return "var places = ";
     }
 
     public static String arrayClose() {
