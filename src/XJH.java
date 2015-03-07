@@ -28,7 +28,7 @@ public class XJH {
     static String delims;
     static String input;
     static String location;
-    static String csvFile = "/Users/Emil/Downloads/contact.csv";
+    static String csvFile = "/Users/Zephan/Downloads/contact.csv";
     static String line = "";
     static String cvsSplitBy = ",";
     static String name;
@@ -98,7 +98,7 @@ public class XJH {
                 location = "";
                 name = "";
                 input = csvReader.get("Mailing Street");
-                if (counter > 0 && !input.equals("") && counter <= 4000) {
+                if (counter > 0 && !input.equals("") && counter <= 200) {
                     name = csvReader.get("Last Name") + ", " + csvReader.get("First Name");
 
                     tokens = input.split(delims);
@@ -119,7 +119,7 @@ public class XJH {
                         }
                     } else {
                         AlreadyWrittenChecker.addToList(location);
-                        geocode(location, name, ArrayNum + 1);
+                        geocode(location, name, ArrayNum + counter);
                     }
                 }
                 counter++;
