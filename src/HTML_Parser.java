@@ -9,26 +9,35 @@ public class HTML_Parser {
     static Scanner htmlScanner;
     static String input;
     static String cache;
-    static String arrayNum;
-////////////////////////////////////////////////////////////////////////////////    
-    static final String convArrayNumsDelim = "]";
-////////////////////////////////////////////////////////////////////////////////
-    static String[] convArrayNumbers;
 ////////////////////////////////////////////////////////////////////////////////
 
     public static void parseHTML() throws FileNotFoundException {
         input = "";
-        htmlScanner = new Scanner(new File("dataTest.html"));
+        htmlScanner = new Scanner(new File("dataTEST.html"));
         try {
             htmlScanner.useDelimiter("\\[");
             htmlScanner.next();
             while (true) {
-                cache = input + "[" + htmlScanner.next();
-                if (!cache.contains(";")) {
-                    input = cache;
-                } else {
-                    break;
-                }
+                cache = htmlScanner.next();
+                if (cache.contains("var basicInquiryMarkers")) {
+                    System.out.println();
+                } else if (cache.contains("var goodProgressInquiryMarkers")) {
+                    System.out.println(cache);
+                } else if (cache.contains("var workerCompMarkers")) {
+                    System.out.println(cache);
+                } else if (cache.contains("var potentialClientMarkers")) {
+                    System.out.println(cache);
+                } else if (cache.contains("var completedCustomerMarkers")) {
+                    System.out.println(cache);
+                } else if (cache.contains("var prosthetistMarkers")) {
+                    System.out.println(cache);
+                } else if (cache.contains("var doctorMarkers")) {
+                    System.out.println(cache);
+                } else if (cache.contains("var therapistMarkers")) {
+                    System.out.println(cache);
+                } else if (cache.contains("var nurseCaseManagerMarkers")) {
+                    System.out.println(cache);
+                } 
             }
 
         } catch (NoSuchElementException e) {

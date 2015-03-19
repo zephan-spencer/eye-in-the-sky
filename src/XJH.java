@@ -58,9 +58,9 @@ public class XJH {
             writeData();
             writer.close();
         } else {
-//            GlobalVariables.newFile = false;
-//            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
-//            HTML_Parser.parseHTML();
+            GlobalVariables.newFile = false;
+            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+            HTML_Parser.parseHTML();
 //            run();
 //            initXJHWriter();
 //            writer.write(HTML.getHeader());
@@ -69,6 +69,7 @@ public class XJH {
 //            writer.write(HTML.arrayClose());
 //            writer.write(HTML.getFooter());
 //            writer.close();
+            System.out.println(HTML_Parser.getPreviousCords());
         }
         AlreadyWrittenChecker.closeWrittenChecker();
     }
@@ -238,6 +239,7 @@ public class XJH {
         writer.write(HTML.nurseCaseManagerOpen());
         writer.write(nurseCaseManagerOutput);
         writer.write(HTML.nurseCaseManagerClose());
+        writer.write(HTML.getFunctions());
         writer.write(HTML.getFooter());
     }
 }

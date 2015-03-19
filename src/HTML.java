@@ -7,31 +7,7 @@ public class HTML {
 
     public static String basicInquiryMarkersClose() {
         return "];\n"
-                + "			var basicInquiryMarkersArray = [];\n"
-                + "\n"
-                + "			function setBasicInquiryMarkers(map, locations, infoWindow) {\n"
-                + "				var shape = {\n"
-                + "					coords: [1, 1, 1, 20, 18, 20, 18 , 1],\n"
-                + "					type: 'poly'\n"
-                + "				};\n"
-                + "		                // Create an empty array to hold your workerComp markers\n"
-                + "		                for (var i = 0; i < basicInquiryMarkers.length; i++) {\n"
-                + "\n"
-                + "		                	var place = locations[i];\n"
-                + "		                	var myLatLng = new google.maps.LatLng(place[1], place[2]);\n"
-                + "		                	var marker = new google.maps.Marker({\n"
-                + "		                		position: myLatLng,\n"
-                + "		                		map: map,\n"
-                + "		                		shape: shape,\n"
-                + "		                		title: place[0],\n"
-                + "		                		icon: \"markers/basicInquiry.png\"\n"
-                + "		                	});\n"
-                + "\n"
-                + "		                    // Push each workerComp marker to the corresponding array\n"
-                + "		                    basicInquiryMarkersArray.push(marker);\n"
-                + "		                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
-                + "		                }\n"
-                + "		            }";
+                + "			var basicInquiryMarkersArray = [];\n";
     }
 
     public static String workerCompMarkersOpen() {
@@ -40,13 +16,103 @@ public class HTML {
 
     public static String workerCompMarkersClose() {
         return "];\n"
-                + "		            var workerCompMarkersArray = [];\n"
+                + "		            var workerCompMarkersArray = [];\n";
+    }
+
+    public static String goodProgressInquiryMarkersOpen() {
+        return "var goodProgressInquiryMarkers = [";
+    }
+
+    public static String goodProgressInquiryMarkersClose() {
+        return "];\n"
+                + "            var goodProgressInquiryMarkersArray = [];\n";
+    }
+
+    public static String potentialMarkersOpen() {
+        return "var potentialMarkers = [";
+    }
+
+    public static String potentialMarkersClose() {
+        return "];\n"
+                + "            var potentialMarkersArray = [];\n";
+    }
+
+    public static String completedCustomerMarkersOpen() {
+        return "var completedCustomerMarkers = [";
+    }
+
+    public static String completedCustomerMarkersClose() {
+        return "];\n"
+                + "            var completedCustomerMarkersArray = [];\n";
+    }
+
+    public static String doctorOpen() {
+        return "var doctorMarkers = [";
+    }
+
+    public static String doctorClose() {
+        return " ];\n"
+                + "	            var doctorMarkersArray = [];\n";
+    }
+
+    public static String therapistOpen() {
+        return "var therapistMarkers = [";
+    }
+
+    public static String therapistClose() {
+        return "			   \n"
+                + "			   ];\n"
+                + "	            var therapistMarkersArray = [];\n";
+    }
+
+    public static String nurseCaseManagerOpen() {
+        return " var nurseCaseManagerMarkers = [";
+    }
+
+    public static String nurseCaseManagerClose() {
+        return " ];";
+    }
+
+    public static String prosthetistOpen() {
+        return " var prosthetistMarkers = [";
+    }
+
+    public static String prosthetistClose() {
+        return " ];\n"
+                + "	            var prosthetistMarkersArray = [];\n";
+    }
+
+    public static String getFunctions() {
+        return "\n"
+                + "	           function setDoctorMarkers(map, locations, infoWindow) {\n"
+                + "					var shape = {\n"
+                + "						coords: [1, 1, 1, 20, 18, 20, 18 , 1],\n"
+                + "						type: 'poly'\n"
+                + "					};\n"
+                + "			                // Create an empty array to hold your workerComp markers\n"
+                + "			                for (var i = 0; i < doctorMarkers.length; i++) {\n"
+                + "\n"
+                + "			                	var place = locations[i];\n"
+                + "			                	var myLatLng = new google.maps.LatLng(place[1], place[2]);\n"
+                + "			                	var marker = new google.maps.Marker({\n"
+                + "			                		position: myLatLng,\n"
+                + "			                		map: map,\n"
+                + "			                		shape: shape,\n"
+                + "			                		title: place[0],\n"
+                + "			                		icon: \"markers/doctor.png\"\n"
+                + "			                	});\n"
+                + "\n"
+                + "			                    // Push each workerComp marker to the corresponding array\n"
+                + "			                    doctorMarkersArray.push(marker);\n"
+                + "			                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
+                + "			                }\n"
+                + "			            }"
                 + "\n"
                 + "		            function setWorkerCompMarkers(map, locations) {\n"
                 + "		            	var shape = {\n"
-                + "		            		coords: [1, 1, 1, 20, 18, 20, 18 , 1],\n"
-                + "		            		type: 'poly'\n"
-                + "		            	};\n"
+                + "					coords: [17, 17, 34, 32],\n"
+                + "					type: 'rect'\n"
+                + "				};"
                 + "                // Create an empty array to hold your workerComp markers\n"
                 + "                for (var i = 0; i < workerCompMarkers.length; i++) {\n"
                 + "\n"
@@ -63,16 +129,7 @@ public class HTML {
                 + "                    // Push each workerComp marker to the corresponding array\n"
                 + "                    workerCompMarkersArray.push(marker);\n"
                 + "                }\n"
-                + "            }";
-    }
-
-    public static String goodProgressInquiryMarkersOpen() {
-        return "var goodProgressInquiryMarkers = [";
-    }
-
-    public static String goodProgressInquiryMarkersClose() {
-        return "];\n"
-                + "            var goodProgressInquiryMarkersArray = [];\n"
+                + "            }"
                 + "\n"
                 + "           function setGoodProgressInquiryMarkers(map, locations, infoWindow) {\n"
                 + "				var shape = {\n"
@@ -96,24 +153,15 @@ public class HTML {
                 + "		                    goodProgressInquiryMarkersArray.push(marker);\n"
                 + "		                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
                 + "		                }\n"
-                + "		            }";
-    }
-
-    public static String potentialMarkersOpen() {
-        return "var potentialMarkers = [";
-    }
-
-    public static String potentialMarkersClose() {
-        return "];\n"
-                + "            var potentialMarkersArray = [];\n"
+                + "		            }"
                 + "\n"
-                + "           function setPotentialMarkers(map, locations, infoWindow) {\n"
+                + "			function setBasicInquiryMarkers(map, locations, infoWindow) {\n"
                 + "				var shape = {\n"
                 + "					coords: [1, 1, 1, 20, 18, 20, 18 , 1],\n"
                 + "					type: 'poly'\n"
                 + "				};\n"
                 + "		                // Create an empty array to hold your workerComp markers\n"
-                + "		                for (var i = 0; i < potentialMarkers.length; i++) {\n"
+                + "		                for (var i = 0; i < basicInquiryMarkers.length; i++) {\n"
                 + "\n"
                 + "		                	var place = locations[i];\n"
                 + "		                	var myLatLng = new google.maps.LatLng(place[1], place[2]);\n"
@@ -122,29 +170,20 @@ public class HTML {
                 + "		                		map: map,\n"
                 + "		                		shape: shape,\n"
                 + "		                		title: place[0],\n"
-                + "		                		icon: \"markers/potential.png\"\n"
+                + "		                		icon: \"markers/basicInquiry.png\"\n"
                 + "		                	});\n"
                 + "\n"
                 + "		                    // Push each workerComp marker to the corresponding array\n"
-                + "		                    potentialMarkersArray.push(marker);\n"
+                + "		                    basicInquiryMarkersArray.push(marker);\n"
                 + "		                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
                 + "		                }\n"
-                + "		            }";
-    }
-
-    public static String completedCustomerMarkersOpen() {
-        return "var completedCustomerMarkers = [";
-    }
-
-    public static String completedCustomerMarkersClose() {
-        return "];\n"
-                + "            var completedCustomerMarkersArray = [];\n"
+                + "		            }"
                 + "\n"
                 + "           function setCompletedCustomerMarkers(map, locations, infoWindow) {\n"
                 + "				var shape = {\n"
-                + "					coords: [1, 1, 1, 20, 18, 20, 18 , 1],\n"
-                + "					type: 'poly'\n"
-                + "				};\n"
+                + "					coords: [17, 17, 34, 32],\n"
+                + "					type: 'rect'\n"
+                + "				};"
                 + "		                // Create an empty array to hold your workerComp markers\n"
                 + "		                for (var i = 0; i < completedCustomerMarkers.length; i++) {\n"
                 + "\n"
@@ -162,91 +201,7 @@ public class HTML {
                 + "		                    completedCustomerMarkersArray.push(marker);\n"
                 + "		                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
                 + "		                }\n"
-                + "		            }";
-    }
-
-    public static String doctorOpen() {
-        return "var doctorMarkers = [";
-    }
-
-    public static String doctorClose() {
-        return " ];\n"
-                + "	            var doctorMarkersArray = [];\n"
-                + "\n"
-                + "	           function setDoctorMarkers(map, locations, infoWindow) {\n"
-                + "					var shape = {\n"
-                + "						coords: [1, 1, 1, 20, 18, 20, 18 , 1],\n"
-                + "						type: 'poly'\n"
-                + "					};\n"
-                + "			                // Create an empty array to hold your workerComp markers\n"
-                + "			                for (var i = 0; i < doctorMarkers.length; i++) {\n"
-                + "\n"
-                + "			                	var place = locations[i];\n"
-                + "			                	var myLatLng = new google.maps.LatLng(place[1], place[2]);\n"
-                + "			                	var marker = new google.maps.Marker({\n"
-                + "			                		position: myLatLng,\n"
-                + "			                		map: map,\n"
-                + "			                		shape: shape,\n"
-                + "			                		title: place[0],\n"
-                + "			                		icon: \"markers/doctor.png\"\n"
-                + "			                	});\n"
-                + "\n"
-                + "			                    // Push each workerComp marker to the corresponding array\n"
-                + "			                    doctorMarkersArray.push(marker);\n"
-                + "			                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
-                + "			                }\n"
-                + "			            }";
-    }
-
-    public static String therapistOpen() {
-        return "var therapistMarkers = [";
-    }
-
-    public static String therapistClose() {
-        return "			   \n"
-                + "			   ];\n"
-                + "	            var therapistMarkersArray = [];\n"
-                + "\n"
-                + "	           function setTherapistMarkers(map, locations, infoWindow) {\n"
-                + "					var shape = {\n"
-                + "						coords: [1, 1, 1, 20, 18, 20, 18 , 1],\n"
-                + "						type: 'poly'\n"
-                + "					};\n"
-                + "			                // Create an empty array to hold your workerComp markers\n"
-                + "			                for (var i = 0; i < therapistMarkers.length; i++) {\n"
-                + "\n"
-                + "			                	var place = locations[i];\n"
-                + "			                	var myLatLng = new google.maps.LatLng(place[1], place[2]);\n"
-                + "			                	var marker = new google.maps.Marker({\n"
-                + "			                		position: myLatLng,\n"
-                + "			                		map: map,\n"
-                + "			                		shape: shape,\n"
-                + "			                		title: place[0],\n"
-                + "			                		icon: \"markers/therapist.png\"\n"
-                + "			                	});\n"
-                + "\n"
-                + "			                    // Push each workerComp marker to the corresponding array\n"
-                + "			                    therapistMarkersArray.push(marker);\n"
-                + "			                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
-                + "			                }\n"
-                + "			            }";
-    }
-
-    public static String nurseCaseManagerOpen() {
-        return " var nurseCaseManagerMarkers = [";
-    }
-
-    public static String nurseCaseManagerClose() {
-        return " ];";
-    }
-
-    public static String prosthetistOpen() {
-        return " var prosthetistMarkers = [";
-    }
-
-    public static String prosthetistClose() {
-        return " ];\n"
-                + "	            var prosthetistMarkersArray = [];\n"
+                + "		            }"
                 + "\n"
                 + "	           function setProsthetistMarkers(map, locations, infoWindow) {\n"
                 + "					var shape = {\n"
@@ -270,7 +225,54 @@ public class HTML {
                 + "			                    prosthetistMarkersArray.push(marker);\n"
                 + "			                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
                 + "			                }\n"
-                + "			            }";
+                + "			            }"
+                + "	           function setTherapistMarkers(map, locations, infoWindow) {\n"
+                + "					var shape = {\n"
+                + "						coords: [1, 1, 1, 20, 18, 20, 18 , 1],\n"
+                + "						type: 'poly'\n"
+                + "					};\n"
+                + "			                // Create an empty array to hold your workerComp markers\n"
+                + "			                for (var i = 0; i < therapistMarkers.length; i++) {\n"
+                + "\n"
+                + "			                	var place = locations[i];\n"
+                + "			                	var myLatLng = new google.maps.LatLng(place[1], place[2]);\n"
+                + "			                	var marker = new google.maps.Marker({\n"
+                + "			                		position: myLatLng,\n"
+                + "			                		map: map,\n"
+                + "			                		shape: shape,\n"
+                + "			                		title: place[0],\n"
+                + "			                		icon: \"markers/therapist.png\"\n"
+                + "			                	});\n"
+                + "\n"
+                + "			                    // Push each workerComp marker to the corresponding array\n"
+                + "			                    therapistMarkersArray.push(marker);\n"
+                + "			                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
+                + "			                }\n"
+                + "			            }"
+                + "\n"
+                + "           function setPotentialMarkers(map, locations, infoWindow) {\n"
+                + "				var shape = {\n"
+                + "					coords: [17, 17, 34, 32],\n"
+                + "					type: 'rect'\n"
+                + "				};"
+                + "		                // Create an empty array to hold your workerComp markers\n"
+                + "		                for (var i = 0; i < potentialMarkers.length; i++) {\n"
+                + "\n"
+                + "		                	var place = locations[i];\n"
+                + "		                	var myLatLng = new google.maps.LatLng(place[1], place[2]);\n"
+                + "		                	var marker = new google.maps.Marker({\n"
+                + "		                		position: myLatLng,\n"
+                + "		                		map: map,\n"
+                + "		                		shape: shape,\n"
+                + "		                		title: place[0],\n"
+                + "		                		icon: \"markers/potential.png\"\n"
+                + "		                	});\n"
+                + "\n"
+                + "		                    // Push each workerComp marker to the corresponding array\n"
+                + "		                    potentialMarkersArray.push(marker);\n"
+                + "		                    bindInfoWindow(marker, map, infoWindow, place[3]);\n"
+                + "		                }\n"
+                + "		            }";
     }
 
     public static String getHeader() {
