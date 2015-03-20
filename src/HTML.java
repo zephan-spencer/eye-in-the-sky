@@ -70,7 +70,8 @@ public class HTML {
     }
 
     public static String nurseCaseManagerClose() {
-        return " ];";
+        return " ];"
+                + "	            var nurseCaseManagerMarkersArray = [];\n";
     }
 
     public static String prosthetistOpen() {
@@ -287,7 +288,7 @@ public class HTML {
                 + "					margin:auto;\n"
                 + "					position:absolute;\n"
                 + "					width: 98%;\n"
-                + "					height:9%;\n"
+                + "					height:10.5%;\n"
                 + "					font-family: Tahoma, Geneva, sans-serif;\n"
                 + "					font-size: 14px;\n"
                 + "					font-style: italic;\n"
@@ -308,7 +309,7 @@ public class HTML {
                 + "				ca{\n"
                 + "					text-align: center;\n"
                 + "				}\n"
-                + "				html, body, #map-canvas { height: 96%; width: 100%; margin: 0; padding: 0;}\n"
+                + "				html, body, #map-canvas { height: 95%; width: 100%; margin: 0; padding: 0;}\n"
                 + "			</style>\n"
                 + "			<script type=\"text/javascript\"\n"
                 + "			src=\"https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true\">\n"

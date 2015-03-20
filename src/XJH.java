@@ -42,7 +42,7 @@ public class XJH {
     static String prosthetistOutput;
     static String nurseCaseManagerOutput;
     static String type;
-
+    static String city;
 ////////////////////////////////////////////////////////////////////////////////
     static char quotes = '"';
 
@@ -83,6 +83,7 @@ public class XJH {
         delims = "";
         location = "";
         name = "";
+        city = "";
         basicInquiryOutput = "";
         goodProgressInquiryOutput = "";
         workerCompOutput = "";
@@ -112,11 +113,19 @@ public class XJH {
                 name = "";
                 input = "";
                 type = "";
+                city = "";
+                city = csvReader.get("Mailing City");
                 type = csvReader.get("ID/Status");
                 input = csvReader.get("Mailing Street");
-                if (counter > 0 && !type.equals("") && !input.equals("") && counter <= 200) {
-                    name = csvReader.get("Last Name") + ", " + csvReader.get("First Name");
-
+                if (counter > 0 && !type.equals("") && !input.equals("")
+                        && !input.contains("P.O.") && !input.contains("PO")) {
+                    if (city.equals("")) {
+                        input = input + " " + csvReader.get("Mailing State");
+                        name = csvReader.get("Last Name") + ", " + csvReader.get("First Name");
+                    } else {
+                        input = input + " " + city + " " + csvReader.get("Mailing State");
+                        name = csvReader.get("Last Name") + ", " + csvReader.get("First Name");
+                    }
                     tokens = input.split(delims);
                     for (int i = 0; i < tokens.length; i++) {
                         if (i + 1 >= tokens.length) {
@@ -202,7 +211,8 @@ public class XJH {
                     + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
         } else {
         }
-//        Thread.sleep(100);
+        System.out.println(mode);
+        Thread.sleep(200);
     }
 
     public static void initXJHWriter() throws IOException {
