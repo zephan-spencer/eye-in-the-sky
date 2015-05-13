@@ -35,6 +35,7 @@ public class XJH {
     static String basicInquiryOutput;
     static String goodProgressInquiryOutput;
     static String workerCompOutput;
+    static String completedWorkerCompOutput;
     static String potentialClientOutput;
     static String completedCustomerOutput;
     static String doctorOutput;
@@ -87,6 +88,7 @@ public class XJH {
         basicInquiryOutput = "";
         goodProgressInquiryOutput = "";
         workerCompOutput = "";
+        completedWorkerCompOutput = "";
         potentialClientOutput = "";
         completedCustomerOutput = "";
         doctorOutput = "";
@@ -107,7 +109,7 @@ public class XJH {
 //            for (int i = 0; i < tokens.length; i++) {
 //                csvReader.getDelimiter();
 //            }
-            while (csvReader.readRecord()) {
+            while (csvReader.readRecord() && counter < 100) {
                 delims = "[ ]+";
                 location = "";
                 name = "";
@@ -192,20 +194,23 @@ public class XJH {
             potentialClientOutput = potentialClientOutput + "[" + "\"" + name + ""
                     + "\", " + loc.getDouble("lat") + ", "
                     + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
-        } else if (mode.contains("Prosthetist") || mode.contains("Orthotist")
-                || mode.contains("prosthetist") || mode.contains("orthotist")) {
+        } else if (mode.contains("WC Client")) {
+            completedWorkerCompOutput = completedWorkerCompOutput + "[" + "\"" + name + ""
+                    + "\", " + loc.getDouble("lat") + ", "
+                    + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+        } else if (mode.contains("Prosthetist") || mode.contains("Orthotist")) {
             prosthetistOutput = prosthetistOutput + "[" + "\"" + name + ""
                     + "\", " + loc.getDouble("lat") + ", "
                     + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
-        } else if (mode.contains("Doctor") || mode.contains("doctor")) {
+        } else if (mode.contains("Doctor")) {
             doctorOutput = doctorOutput + "[" + "\"" + name + ""
                     + "\", " + loc.getDouble("lat") + ", "
                     + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
-        } else if (mode.contains("Therapist") || mode.contains("therapist")) {
+        } else if (mode.contains("Therapist")) {
             therapistOutput = therapistOutput + "[" + "\"" + name + ""
                     + "\", " + loc.getDouble("lat") + ", "
                     + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
-        } else if (mode.contains("Nurse") || mode.contains("nurse")) {
+        } else if (mode.contains("Nurse")) {
             nurseCaseManagerOutput = nurseCaseManagerOutput + "[" + "\"" + name + ""
                     + "\", " + loc.getDouble("lat") + ", "
                     + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
@@ -231,6 +236,9 @@ public class XJH {
         writer.write(HTML.workerCompMarkersOpen());
         writer.write(workerCompOutput);
         writer.write(HTML.workerCompMarkersClose());
+        writer.write(HTML.completedWorkerCompMarkersOpen());
+        writer.write(completedWorkerCompOutput);
+        writer.write(HTML.completedWorkerCompMarkersClose());
         writer.write(HTML.potentialMarkersOpen());
         writer.write(potentialClientOutput);
         writer.write(HTML.potentialMarkersClose());
