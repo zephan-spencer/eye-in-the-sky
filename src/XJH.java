@@ -13,7 +13,8 @@ public class XJH {
 ////////////////////////////////////////////////////////////////////////////////
     static URL url;
 ////////////////////////////////////////////////////////////////////////////////
-    static CsvReader csvReader;
+    static CsvReader contact_CSV_Reader;
+    static CsvReader lead_CSV_Reader;
 ////////////////////////////////////////////////////////////////////////////////
     static BufferedWriter writer;
 ////////////////////////////////////////////////////////////////////////////////    
@@ -23,12 +24,14 @@ public class XJH {
 ////////////////////////////////////////////////////////////////////////////////
     static String[] tokens;
 ////////////////////////////////////////////////////////////////////////////////
-    static int counter;
+    static int contactCounter;
+    static int leadCounter;
 ////////////////////////////////////////////////////////////////////////////////
     static String delims;
     static String input;
     static String location;
-    static String csvFile = "/Users/Emil/Downloads/contact.csv";
+    static String contactCSV = "/Users/Emil/Downloads/contact.csv";
+    static String leadCSV = "/Users/Emil/Downloads/lead.csv";
     static String line = "";
     static String cvsSplitBy = ",";
     static String name;
@@ -96,75 +99,35 @@ public class XJH {
         prosthetistOutput = "";
         nurseCaseManagerOutput = "";
 ////////////////////////////////////////////////////////////////////////////////        
-        counter = 0;
+        contactCounter = 0;
+        leadCounter = 0;
 ////////////////////////////////////////////////////////////////////////////////        
         mainScanner = new Scanner(System.in);
     }
 
     public static void run() throws Exception {
-        csvReader = null;
+        contact_CSV_Reader = null;
+        lead_CSV_Reader = null;
         try {
-            csvReader = new CsvReader(csvFile);
-            csvReader.readHeaders();
-//            for (int i = 0; i < tokens.length; i++) {
-//                csvReader.getDelimiter();
-//            }
-            while (csvReader.readRecord() && counter < 100) {
-                delims = "[ ]+";
-                location = "";
-                name = "";
-                input = "";
-                type = "";
-                city = "";
-                city = csvReader.get("Mailing City");
-                type = csvReader.get("ID/Status");
-                input = csvReader.get("Mailing Street");
-                if (counter > 0 && !type.equals("") && !input.equals("")
-                        && !input.contains("P.O.") && !input.contains("PO")) {
-                    if (city.equals("")) {
-                        input = input + " " + csvReader.get("Mailing State");
-                        name = csvReader.get("Last Name") + ", " + csvReader.get("First Name");
-                    } else {
-                        input = input + " " + city + " " + csvReader.get("Mailing State");
-                        name = csvReader.get("Last Name") + ", " + csvReader.get("First Name");
-                    }
-                    tokens = input.split(delims);
-                    for (int i = 0; i < tokens.length; i++) {
-                        if (i + 1 >= tokens.length) {
-                            location = location + (tokens[i]);
-                        } else {
-                            location = location + (tokens[i] + "+");
-                        }
-                    }
-                    if (!GlobalVariables.newFile) {
-                        if (AlreadyWrittenChecker.getAddress(location)) {
-                            System.out.println("Already have this address in: " + location);
-                        } else {
-//                            System.out.println("No match :( " + location);
-                            AlreadyWrittenChecker.addToList(location);
-                            geocode(location, name, input, type);
-                        }
-                    } else {
-                        AlreadyWrittenChecker.addToList(location);
-                        geocode(location, name, input, type);
-                    }
-                }
-                counter++;
-            }
-
+            parseContact();
+            parseLead();
         } catch (FileNotFoundException ex) {
+            System.out.println(ex);
         } catch (UnsupportedEncodingException ex) {
+            System.out.println(ex);
         } catch (IOException ex) {
+            System.out.println(ex);
         } catch (ArrayIndexOutOfBoundsException eg) {
+            System.out.println(eg);
         } finally {
             System.out.println("Made it to close!");
-            csvReader.close();
+            contact_CSV_Reader.close();
+            lead_CSV_Reader.close();
         }
         System.out.println("Done");
-
     }
 
-    public static void geocode(String address, String name, String prettyAddress, String mode) throws Exception {
+    public static void geocode(String address, String name, String prettyAddress, Boolean mode, String type) throws Exception {
 ////////clears the variables////////////////////////////////////////////////////
         scanner = null;
         url = null;
@@ -189,40 +152,153 @@ public class XJH {
         System.out.println(res.getString("formatted_address"));
         JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
         System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
-
-        if (mode.contains("Client") || mode.contains("Amputee")) {
-            potentialClientOutput = potentialClientOutput + "[" + "\"" + name + ""
-                    + "\", " + loc.getDouble("lat") + ", "
-                    + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
-        } else if (mode.contains("WC Client")) {
-            completedWorkerCompOutput = completedWorkerCompOutput + "[" + "\"" + name + ""
-                    + "\", " + loc.getDouble("lat") + ", "
-                    + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
-        } else if (mode.contains("Prosthetist") || mode.contains("Orthotist")) {
-            prosthetistOutput = prosthetistOutput + "[" + "\"" + name + ""
-                    + "\", " + loc.getDouble("lat") + ", "
-                    + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
-        } else if (mode.contains("Doctor")) {
-            doctorOutput = doctorOutput + "[" + "\"" + name + ""
-                    + "\", " + loc.getDouble("lat") + ", "
-                    + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
-        } else if (mode.contains("Therapist")) {
-            therapistOutput = therapistOutput + "[" + "\"" + name + ""
-                    + "\", " + loc.getDouble("lat") + ", "
-                    + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
-        } else if (mode.contains("Nurse")) {
-            nurseCaseManagerOutput = nurseCaseManagerOutput + "[" + "\"" + name + ""
-                    + "\", " + loc.getDouble("lat") + ", "
-                    + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+        if (mode) {
+            if (type.contains("Client") || type.contains("Amputee")) {
+                potentialClientOutput = potentialClientOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+            } else if (type.contains("WC Client")) {
+                completedWorkerCompOutput = completedWorkerCompOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+            } else if (type.contains("Prosthetist") || type.contains("Orthotist")) {
+                prosthetistOutput = prosthetistOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+            } else if (type.contains("Doctor")) {
+                doctorOutput = doctorOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+            } else if (type.contains("Therapist")) {
+                therapistOutput = therapistOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+            } else if (type.contains("Nurse")) {
+                nurseCaseManagerOutput = nurseCaseManagerOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+            } else {
+            }
         } else {
+            if (type.contains("") || type.contains("Amputee")) {
+                basicInquiryOutput = basicInquiryOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+            } else if (type.contains("Potential")) {
+                goodProgressInquiryOutput = goodProgressInquiryOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+            } else if (type.contains("Workers Comp")) {
+                workerCompOutput = workerCompOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+            } else {
+            }
         }
-        System.out.println(mode);
+        System.out.println(type);
         Thread.sleep(200);
     }
 
     public static void initXJHWriter() throws IOException {
         writeRef = new FileWriter("dataTest.html", false);
         writer = new BufferedWriter(writeRef);
+    }
+
+    public static void parseContact() throws IOException, Exception {
+        contact_CSV_Reader = new CsvReader(contactCSV);
+        contact_CSV_Reader.readHeaders();
+
+        while (contact_CSV_Reader.readRecord() && contactCounter < 1000) {
+            delims = "[ ]+";
+            location = "";
+            name = "";
+            input = "";
+            type = "";
+            city = "";
+            city = contact_CSV_Reader.get("Mailing City");
+            type = contact_CSV_Reader.get("ID/Status");
+            input = contact_CSV_Reader.get("Mailing Street");
+            if (contactCounter > 0 && !type.equals("") && !input.equals("")
+                    && !input.contains("P.O.") && !input.contains("PO")) {
+                if (city.equals("")) {
+                    input = input + " " + contact_CSV_Reader.get("Mailing State");
+                    name = contact_CSV_Reader.get("Last Name") + ", " + contact_CSV_Reader.get("First Name");
+                } else {
+                    input = input + " " + city + " " + contact_CSV_Reader.get("Mailing State");
+                    name = contact_CSV_Reader.get("Last Name") + ", " + contact_CSV_Reader.get("First Name");
+                }
+                tokens = input.split(delims);
+                for (int i = 0; i < tokens.length; i++) {
+                    if (i + 1 >= tokens.length) {
+                        location = location + (tokens[i]);
+                    } else {
+                        location = location + (tokens[i] + "+");
+                    }
+                }
+                if (!GlobalVariables.newFile) {
+                    if (AlreadyWrittenChecker.getAddress(location)) {
+                        System.out.println("Already have this address in: " + location);
+                    } else {
+//                            System.out.println("No match :( " + location);
+                        AlreadyWrittenChecker.addToList(location);
+                        geocode(location, name, input, true, type);
+                    }
+                } else {
+                    AlreadyWrittenChecker.addToList(location);
+                    geocode(location, name, input, true, type);
+                }
+            }
+            contactCounter++;
+        }
+    }
+
+    public static void parseLead() throws IOException, Exception {
+        lead_CSV_Reader = new CsvReader(leadCSV);
+        lead_CSV_Reader.readHeaders();
+        leadCounter = 0;
+
+        while (lead_CSV_Reader.readRecord() && leadCounter < 1000) {
+            delims = "[ ]+";
+            location = "";
+            name = "";
+            input = "";
+            type = "";
+            city = "";
+
+            city = lead_CSV_Reader.get("City");
+            type = lead_CSV_Reader.get("ID/Status");
+            input = lead_CSV_Reader.get("Street");
+            if (!input.equals("") && !input.contains("P.O.") && !input.contains("\"A\"") && !input.contains("PO")) {
+                if (city.equals("")) {
+                    input = input + " " + lead_CSV_Reader.get("State");
+                    name = lead_CSV_Reader.get("Last Name") + ", " + lead_CSV_Reader.get("First Name");
+                } else {
+                    input = input + " " + city + " " + lead_CSV_Reader.get("State");
+                    name = lead_CSV_Reader.get("Last Name") + ", " + lead_CSV_Reader.get("First Name");
+                }
+                tokens = input.split(delims);
+                for (int i = 0; i < tokens.length; i++) {
+                    if (i + 1 >= tokens.length) {
+                        location = location + (tokens[i]);
+                    } else {
+                        location = location + (tokens[i] + "+");
+                    }
+                }
+//                if (!GlobalVariables.newFile) {
+//                    if (AlreadyWrittenChecker.getAddress(location)) {
+//                        System.out.println("Already have this address in: " + location);
+//                    } else {
+////                            System.out.println("No match :( " + location);
+//                        AlreadyWrittenChecker.addToList(location);
+//                        geocode(location, name, input, type);
+//                    }
+//                } else {
+//                AlreadyWrittenChecker.addToList(location);
+                geocode(location, name, input, false, type);
+//                }
+                leadCounter++;
+            }
+        }
     }
 
     public static void writeData() throws IOException {
