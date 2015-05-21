@@ -47,6 +47,7 @@ public class XJH {
     static String nurseCaseManagerOutput;
     static String type;
     static String city;
+    static String phoneNumber;
 ////////////////////////////////////////////////////////////////////////////////
     static char quotes = '"';
 
@@ -98,6 +99,7 @@ public class XJH {
         therapistOutput = "";
         prosthetistOutput = "";
         nurseCaseManagerOutput = "";
+        phoneNumber = "";
 ////////////////////////////////////////////////////////////////////////////////        
         contactCounter = 0;
         leadCounter = 0;
@@ -127,7 +129,7 @@ public class XJH {
         System.out.println("Done");
     }
 
-    public static void geocode(String address, String name, String prettyAddress, Boolean mode, String type) throws Exception {
+    public static void geocode(String address, String name, String prettyAddress, Boolean mode, String type, String phone) throws Exception {
 ////////clears the variables////////////////////////////////////////////////////
         scanner = null;
         url = null;
@@ -156,42 +158,42 @@ public class XJH {
             if (type.contains("Client") || type.contains("Amputee")) {
                 potentialClientOutput = potentialClientOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("WC Client")) {
                 completedWorkerCompOutput = completedWorkerCompOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Prosthetist") || type.contains("Orthotist")) {
                 prosthetistOutput = prosthetistOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Doctor")) {
                 doctorOutput = doctorOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Therapist")) {
                 therapistOutput = therapistOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Nurse")) {
                 nurseCaseManagerOutput = nurseCaseManagerOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else {
             }
         } else {
             if (type.contains("") || type.contains("Amputee")) {
                 basicInquiryOutput = basicInquiryOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "\"" + "],";
             } else if (type.contains("Potential")) {
                 goodProgressInquiryOutput = goodProgressInquiryOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "\"" + "],";
             } else if (type.contains("Workers Comp")) {
                 workerCompOutput = workerCompOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + prettyAddress + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "\"" + "],";
             } else {
             }
         }
@@ -210,14 +212,10 @@ public class XJH {
 
         while (contact_CSV_Reader.readRecord() && contactCounter < 1000) {
             delims = "[ ]+";
-            location = "";
-            name = "";
-            input = "";
-            type = "";
-            city = "";
             city = contact_CSV_Reader.get("Mailing City");
             type = contact_CSV_Reader.get("ID/Status");
             input = contact_CSV_Reader.get("Mailing Street");
+            phoneNumber = contact_CSV_Reader.get("Phone");
             if (contactCounter > 0 && !type.equals("") && !input.equals("")
                     && !input.contains("P.O.") && !input.contains("PO")) {
                 if (city.equals("")) {
@@ -241,11 +239,11 @@ public class XJH {
                     } else {
 //                            System.out.println("No match :( " + location);
                         AlreadyWrittenChecker.addToList(location);
-                        geocode(location, name, input, true, type);
+                        geocode(location, name, input, true, type, phoneNumber);
                     }
                 } else {
                     AlreadyWrittenChecker.addToList(location);
-                    geocode(location, name, input, true, type);
+                    geocode(location, name, input, true, type, phoneNumber);
                 }
             }
             contactCounter++;
@@ -257,7 +255,7 @@ public class XJH {
         lead_CSV_Reader.readHeaders();
         leadCounter = 0;
 
-        while (lead_CSV_Reader.readRecord() && leadCounter < 1000) {
+        while (lead_CSV_Reader.readRecord() && leadCounter < 50) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -294,7 +292,7 @@ public class XJH {
 //                    }
 //                } else {
 //                AlreadyWrittenChecker.addToList(location);
-                geocode(location, name, input, false, type);
+                geocode(location, name, input, false, type, null);
 //                }
                 leadCounter++;
             }
