@@ -363,7 +363,7 @@ public class HTML {
                 + "					box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);\n"
                 + "				}\n"
                 + "                             p{\n"
-                + "					font-size: 150%;\n"
+                + "					font-size: 175%;\n"
                 + "				}"
                 + "				ca{\n"
                 + "					text-align: center;\n"
