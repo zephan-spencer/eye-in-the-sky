@@ -15,7 +15,7 @@ public class HTML_Parser {
         input = "";
         htmlScanner = new Scanner(new File("dataTEST.html"));
         try {
-            htmlScanner.useDelimiter("\\[");
+            htmlScanner.useDelimiter("");
             htmlScanner.next();
             while (true) {
                 cache = htmlScanner.next();

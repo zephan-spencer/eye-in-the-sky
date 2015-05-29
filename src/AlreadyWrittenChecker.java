@@ -25,18 +25,18 @@ public class AlreadyWrittenChecker {
         }
     }
 
-    public static void addToList(String address) throws IOException {
-        alreadyWrittenWriter.write(address + ":");
+    public static void addToList(String user) throws IOException {
+        alreadyWrittenWriter.write(user + ":");
     }
 
-    public static boolean getAddress(String location) throws FileNotFoundException {
+    public static boolean checkPerson(String data) throws FileNotFoundException {
         try {
             alreadyWrittenReader = new Scanner(new File(parsedData));
             alreadyWrittenReader.useDelimiter(":");
             while (true) {
                 String temp = "";
                 temp = alreadyWrittenReader.next();
-                if (!location.equals(temp)) {
+                if (!data.equals(temp)) {
                 } else {
                     return true;
                 }

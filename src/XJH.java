@@ -5,7 +5,6 @@ import java.net.URLEncoder;
 import java.util.Scanner;
 import org.json.JSONObject;
 import com.csvreader.CsvReader;
-import static java.lang.Thread.sleep;
 
 public class XJH {
 
@@ -48,6 +47,7 @@ public class XJH {
     static String type;
     static String city;
     static String phoneNumber;
+    static String peopleCache;
 ////////////////////////////////////////////////////////////////////////////////
     static char quotes = '"';
 
@@ -66,15 +66,10 @@ public class XJH {
             GlobalVariables.newFile = false;
             AlreadyWrittenChecker.alreadyWrittenCheckerInit();
             HTML_Parser.parseHTML();
-//            run();
-//            initXJHWriter();
-//            writer.write(HTML.getHeader());
-//            writer.write(HTML.previousArrayOpen());
-//            writer.write(HTML_Parser.getPreviousCords() + output);
-//            writer.write(HTML.arrayClose());
-//            writer.write(HTML.getFooter());
-//            writer.close();
-            System.out.println(HTML_Parser.getPreviousCords());
+            initXJHWriter();
+            run();
+            writeData();
+            writer.close();
         }
         AlreadyWrittenChecker.closeWrittenChecker();
     }
@@ -100,6 +95,7 @@ public class XJH {
         prosthetistOutput = "";
         nurseCaseManagerOutput = "";
         phoneNumber = "";
+        peopleCache = "";
 ////////////////////////////////////////////////////////////////////////////////        
         contactCounter = 0;
         leadCounter = 0;
@@ -158,42 +154,42 @@ public class XJH {
             if (type.contains("Client") || type.contains("Amputee")) {
                 potentialClientOutput = potentialClientOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("WC Client")) {
                 completedWorkerCompOutput = completedWorkerCompOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Prosthetist") || type.contains("Orthotist")) {
                 prosthetistOutput = prosthetistOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Doctor")) {
                 doctorOutput = doctorOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Therapist")) {
                 therapistOutput = therapistOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Nurse")) {
                 nurseCaseManagerOutput = nurseCaseManagerOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else {
             }
         } else {
             if (type.contains("") || type.contains("Amputee")) {
                 basicInquiryOutput = basicInquiryOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
             } else if (type.contains("Potential")) {
                 goodProgressInquiryOutput = goodProgressInquiryOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
             } else if (type.contains("Workers Comp")) {
                 workerCompOutput = workerCompOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>"+ "<p>" + prettyAddress + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
             } else {
             }
         }
@@ -210,8 +206,16 @@ public class XJH {
         contact_CSV_Reader = new CsvReader(contactCSV);
         contact_CSV_Reader.readHeaders();
 
-        while (contact_CSV_Reader.readRecord() && contactCounter < 1000) {
+        while (contact_CSV_Reader.readRecord() && contactCounter < 10) {
             delims = "[ ]+";
+            location = "";
+            name = "";
+            input = "";
+            type = "";
+            city = "";
+            phoneNumber = "";
+            peopleCache = "";
+
             city = contact_CSV_Reader.get("Mailing City");
             type = contact_CSV_Reader.get("ID/Status");
             input = contact_CSV_Reader.get("Mailing Street");
@@ -234,16 +238,22 @@ public class XJH {
                     }
                 }
                 if (!GlobalVariables.newFile) {
-                    if (AlreadyWrittenChecker.getAddress(location)) {
+                    if (AlreadyWrittenChecker.checkPerson(location)) {
                         System.out.println("Already have this address in: " + location);
                     } else {
 //                            System.out.println("No match :( " + location);
-                        AlreadyWrittenChecker.addToList(location);
+                        peopleCache = name + " " + location;
+                        AlreadyWrittenChecker.addToList(peopleCache);
                         geocode(location, name, input, true, type, phoneNumber);
                     }
                 } else {
-                    AlreadyWrittenChecker.addToList(location);
-                    geocode(location, name, input, true, type, phoneNumber);
+                    peopleCache = name + " " + location;
+                    if (AlreadyWrittenChecker.checkPerson(peopleCache)) {
+                        System.out.println("This person is already on the map.");
+                    } else {
+                        AlreadyWrittenChecker.addToList(peopleCache);
+                        geocode(location, name, input, true, type, phoneNumber);
+                    }
                 }
             }
             contactCounter++;
@@ -255,7 +265,7 @@ public class XJH {
         lead_CSV_Reader.readHeaders();
         leadCounter = 0;
 
-        while (lead_CSV_Reader.readRecord() && leadCounter < 50) {
+        while (lead_CSV_Reader.readRecord() & leadCounter < 10) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -331,7 +341,6 @@ public class XJH {
         writer.write(HTML.nurseCaseManagerOpen());
         writer.write(nurseCaseManagerOutput);
         writer.write(HTML.nurseCaseManagerClose());
-        writer.write(HTML.getFunctions());
         writer.write(HTML.getFooter());
     }
 }
