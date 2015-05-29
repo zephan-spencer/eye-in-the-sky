@@ -6,8 +6,7 @@ public class HTML {
     }
 
     public static String basicInquiryMarkersClose() {
-        return "];\n"
-                + "			var basicInquiryMarkersArray = [];\n";
+        return "];\n";
     }
 
     public static String workerCompMarkersOpen() {
@@ -19,15 +18,11 @@ public class HTML {
     }
 
     public static String completedWorkerCompMarkersClose() {
-
-        return "]; \n "
-                + "var completedWorkerCompMarkersArray = [];";
-
+        return "];\n ";
     }
 
     public static String workerCompMarkersClose() {
-        return "];\n"
-                + "		            var workerCompMarkersArray = [];\n";
+        return "];\n";
     }
 
     public static String goodProgressInquiryMarkersOpen() {
@@ -35,8 +30,7 @@ public class HTML {
     }
 
     public static String goodProgressInquiryMarkersClose() {
-        return "];\n"
-                + "            var goodProgressInquiryMarkersArray = [];\n";
+        return "];\n";
     }
 
     public static String potentialMarkersOpen() {
@@ -44,8 +38,7 @@ public class HTML {
     }
 
     public static String potentialMarkersClose() {
-        return "];\n"
-                + "            var potentialMarkersArray = [];\n";
+        return "];\n";
     }
 
     public static String completedCustomerMarkersOpen() {
@@ -53,8 +46,7 @@ public class HTML {
     }
 
     public static String completedCustomerMarkersClose() {
-        return "];\n"
-                + "            var completedCustomerMarkersArray = [];\n";
+        return "];\n";
     }
 
     public static String doctorOpen() {
@@ -62,8 +54,7 @@ public class HTML {
     }
 
     public static String doctorClose() {
-        return " ];\n"
-                + "	            var doctorMarkersArray = [];\n";
+        return " ];\n";
     }
 
     public static String therapistOpen() {
@@ -72,8 +63,7 @@ public class HTML {
 
     public static String therapistClose() {
         return "			   \n"
-                + "			   ];\n"
-                + "	            var therapistMarkersArray = [];\n";
+                + "			   ];\n";
     }
 
     public static String nurseCaseManagerOpen() {
@@ -81,8 +71,7 @@ public class HTML {
     }
 
     public static String nurseCaseManagerClose() {
-        return " ];"
-                + "	            var nurseCaseManagerMarkersArray = [];\n";
+        return " ]; \n";
     }
 
     public static String prosthetistOpen() {
@@ -90,8 +79,7 @@ public class HTML {
     }
 
     public static String prosthetistClose() {
-        return " ];\n"
-                + "	            var prosthetistMarkersArray = [];\n";
+        return " ];\n";
     }
 
     public static String getHeader() {
@@ -126,6 +114,16 @@ public class HTML {
                 + "                             setProsthetistMarkers(map, prosthetistMarkers, infoWindow);\n"
                 + "				setNurseCaseManagerMarkers(map, nurseCaseManagerMarkers, infoWindow);\n"
                 + "			}\n"
+                + "             var basicInquiryMarkersArray = [];\n"
+                + "             var completedWorkerCompMarkersArray = [];\n"
+                + "             var workerCompMarkersArray = [];\n"
+                + "             var goodProgressInquiryMarkersArray = [];\n"
+                + "             var potentialMarkersArray = [];\n"
+                + "             var completedCustomerMarkersArray = [];\n"
+                + "	        var therapistMarkersArray = [];\n"
+                + "	        var nurseCaseManagerMarkersArray = [];\n"
+                + "	        var prosthetistMarkersArray = [];\n"
+                + "	        var doctorMarkersArray = [];\n"
                 + "			function bindInfoWindow(marker, map, infowindow, description) {\n"
                 + "				google.maps.event.addListener(marker, 'click', function() {\n"
                 + "					infowindow.setContent(description);\n"

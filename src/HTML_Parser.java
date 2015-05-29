@@ -1,45 +1,45 @@
-
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HTML_Parser {
 
-    static Scanner htmlScanner;
     static String input;
     static String cache;
-////////////////////////////////////////////////////////////////////////////////
+    static Matcher matcher;
+    static FileReader fileReader;
+    static BufferedReader htmlScanner;
+    static String line;
+    final static String alreadyScanned = "alreadyScanned.txt";
 
-    public static void parseHTML() throws FileNotFoundException {
+    public static void initialize() throws FileNotFoundException {
+        fileReader = new FileReader(alreadyScanned);
+        htmlScanner = new BufferedReader(fileReader);
+        line = null;
+    }
+
+    public static void setMatcher() {
+        matcher = Pattern.compile("\\[(.*?)\\]").matcher(cache);
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+    public static void parseHTML() throws FileNotFoundException, IOException {
         input = "";
-        htmlScanner = new Scanner(new File("dataTEST.html"));
         try {
-            htmlScanner.useDelimiter("");
-            htmlScanner.next();
-            while (true) {
-                cache = htmlScanner.next();
-                if (cache.contains("var basicInquiryMarkers")) {
-                    System.out.println();
-                } else if (cache.contains("var goodProgressInquiryMarkers")) {
-                    System.out.println(cache);
-                } else if (cache.contains("var workerCompMarkers")) {
-                    System.out.println(cache);
-                } else if (cache.contains("var potentialClientMarkers")) {
-                    System.out.println(cache);
-                } else if (cache.contains("var completedCustomerMarkers")) {
-                    System.out.println(cache);
-                } else if (cache.contains("var prosthetistMarkers")) {
-                    System.out.println(cache);
-                } else if (cache.contains("var doctorMarkers")) {
-                    System.out.println(cache);
-                } else if (cache.contains("var therapistMarkers")) {
-                    System.out.println(cache);
-                } else if (cache.contains("var nurseCaseManagerMarkers")) {
-                    System.out.println(cache);
-                } 
+            
+            while ((line = htmlScanner.readLine()) != null) {
+                input = input + line;
+                System.out.println(line);
             }
 
+            setMatcher();
+            while (matcher.find()) {
+                System.out.println(matcher.group(1));
+            }
         } catch (NoSuchElementException e) {
             htmlScanner.close();
             System.out.println("ERROR in HTML_Scanner");
