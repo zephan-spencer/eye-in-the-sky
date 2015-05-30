@@ -30,21 +30,7 @@ public class AlreadyWrittenChecker {
     }
 
     public static boolean checkPerson(String data) throws FileNotFoundException {
-        try {
-            alreadyWrittenReader = new Scanner(new File(parsedData));
-            alreadyWrittenReader.useDelimiter(":");
-            while (true) {
-                String temp = "";
-                temp = alreadyWrittenReader.next();
-                if (!data.equals(temp)) {
-                } else {
-                    return true;
-                }
-            }
-
-        } catch (NoSuchElementException e) {
-            return false;
-        }
+        return false;
     }
 
     public static void closeWrittenChecker() throws IOException {

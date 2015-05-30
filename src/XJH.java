@@ -143,6 +143,7 @@ public class XJH {
 ////////build a JSON object/////////////////////////////////////////////////////
         JSONObject obj = new JSONObject(str);
         if (!obj.getString("status").equals("OK")) {
+            System.out.println(str);
             return;
         }
 ////////get the first result////////////////////////////////////////////////////
