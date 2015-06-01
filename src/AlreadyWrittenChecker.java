@@ -10,6 +10,9 @@ public class AlreadyWrittenChecker {
 
     private final static String parsedData = "alreadyScanned.txt";
 ////////////////////////////////////////////////////////////////////////////////
+    private static String name;
+    private static String address;
+////////////////////////////////////////////////////////////////////////////////    
     private static FileWriter alreadyWrittenWriter;
 ////////////////////////////////////////////////////////////////////////////////
     private static Scanner alreadyWrittenReader;
@@ -38,6 +41,7 @@ public class AlreadyWrittenChecker {
                 temp = alreadyWrittenReader.next();
                 if (!data.equals(temp)) {
                 } else {
+                    parsePerson(data);
                     return true;
                 }
             }
@@ -45,6 +49,35 @@ public class AlreadyWrittenChecker {
         } catch (NoSuchElementException e) {
             return false;
         }
+    }
+
+    public static void parsePerson(String data) throws FileNotFoundException {
+        try {
+            alreadyWrittenReader = new Scanner(new File(parsedData));
+            alreadyWrittenReader.useDelimiter("]");
+////////////////////////////////////////////////////////////////////////////////
+            name = "";
+            address = "";
+////////////////////////////////////////////////////////////////////////////////            
+            int counter = 0;
+
+            for (int i = 0; i < 2; i++) {
+                if (i == 0) {
+                    name = alreadyWrittenReader.next();
+                } else {
+                    address = alreadyWrittenReader.next();
+                }
+            }
+        } catch (NoSuchElementException e) {
+        }
+    }
+
+    public static boolean checkName(String inputtedName) {
+        return name.equals(inputtedName);
+    }
+
+    public static boolean checkAddress(String inputtedAddress) {
+        return address.equals(inputtedAddress);
     }
 
     public static void closeWrittenChecker() throws IOException {

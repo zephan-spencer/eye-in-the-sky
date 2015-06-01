@@ -108,7 +108,7 @@ public class XJH {
         lead_CSV_Reader = null;
         try {
             parseContact();
-            parseLead();
+//            parseLead();
         } catch (FileNotFoundException ex) {
             System.out.println(ex);
         } catch (UnsupportedEncodingException ex) {
@@ -120,7 +120,7 @@ public class XJH {
         } finally {
             System.out.println("Made it to close!");
             contact_CSV_Reader.close();
-            lead_CSV_Reader.close();
+//            lead_CSV_Reader.close();
         }
         System.out.println("Done");
     }
@@ -207,7 +207,7 @@ public class XJH {
         contact_CSV_Reader = new CsvReader(contactCSV);
         contact_CSV_Reader.readHeaders();
 
-        while (contact_CSV_Reader.readRecord() && contactCounter < 15) {
+        while (contact_CSV_Reader.readRecord() && contactCounter < 10) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -239,11 +239,15 @@ public class XJH {
                     }
                 }
 
-                personCache = name + " " + location;
-
+                personCache = name + "]" + location;
+                
+                AlreadyWrittenChecker.parsePerson(personCache);
+                
                 if (!GlobalVariables.newFile) {
                     if (AlreadyWrittenChecker.checkPerson(personCache)) {
-                        System.out.println("Already have this address in: " + location);
+                        System.out.println("Already have this one in: " + personCache);
+                    } else if (AlreadyWrittenChecker.checkName(name) && !AlreadyWrittenChecker.checkAddress(location)) {
+                        System.out.println("ADDRESS CHANGE!!! " + personCache);
                     } else {
 //                            System.out.println("No match :( " + location);
                         AlreadyWrittenChecker.addToList(personCache);
@@ -267,7 +271,7 @@ public class XJH {
         lead_CSV_Reader.readHeaders();
         leadCounter = 0;
 
-        while (lead_CSV_Reader.readRecord() & leadCounter < 15) {
+        while (lead_CSV_Reader.readRecord() & leadCounter < 10) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -295,24 +299,24 @@ public class XJH {
                     }
                 }
 
-                personCache = name + " " + location;
-
-                if (!GlobalVariables.newFile) {
-                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
-                        System.out.println("Already have this address in: " + location);
-                    } else {
-//                            System.out.println("No match :( " + location);
-                        AlreadyWrittenChecker.addToList(personCache);
-                        geocode(location, name, input, false, type, null);
-                    }
-                } else {
-                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
-                        System.out.println("This person is already on the map.");
-                    } else {
-                        AlreadyWrittenChecker.addToList(personCache);
-                        geocode(location, name, input, false, type, null);
-                    }
-                }
+//                personCache = name + " " + location;
+//
+//                if (!GlobalVariables.newFile) {
+//                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
+//                        System.out.println("Already have this address in: " + location);
+//                    } else {
+////                            System.out.println("No match :( " + location);
+//                        AlreadyWrittenChecker.addToList(personCache);
+//                        geocode(location, name, input, false, type, null);
+//                    }
+//                } else {
+//                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
+//                        System.out.println("This person is already on the map.");
+//                    } else {
+//                        AlreadyWrittenChecker.addToList(personCache);
+//                        geocode(location, name, input, false, type, null);
+//                    }
+//                }
                 leadCounter++;
             }
         }
@@ -407,7 +411,7 @@ public class XJH {
             writer.write(HTML.completedCustomerMarkersOpen());
             writer.write(completedCustomerOutput);
             writer.write(HTML.completedCustomerMarkersClose());
-            
+
             writer.write(HTML.completedWorkerCompMarkersOpen());
             writer.write(completedWorkerCompOutput);
             writer.write(HTML.completedWorkerCompMarkersClose());

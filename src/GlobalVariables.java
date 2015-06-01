@@ -1,6 +1,5 @@
 
 public class GlobalVariables {
-
     public static boolean newFile;
 ////////////////////////////////////////////////////////////////////////////////
     public static String previousBasicInquiries;
@@ -13,5 +12,4 @@ public class GlobalVariables {
     public static String previousWorkerComps;
     public static String previousCompletedCustomers;
     public static String previousCompletedWorkerComp;
-
 }
