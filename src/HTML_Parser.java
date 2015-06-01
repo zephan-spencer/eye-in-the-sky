@@ -9,16 +9,6 @@ import java.util.regex.Pattern;
 
 public class HTML_Parser {
 
-    public static String previousBasicInquiries;
-    public static String previousPotentials;
-    public static String previousDoctors;
-    public static String previousTherapists;
-    public static String previousProsthetists;
-    public static String previousGoodProgressInquiries;
-    public static String previousWorkerComps;
-    public static String previousCompletedCustomers;
-
-////////////////////////////////////////////////////////////////////////////////
     final static String alreadyScanned = "dataTest.html";
 ////////////////////////////////////////////////////////////////////////////////
     static String input;
@@ -34,16 +24,18 @@ public class HTML_Parser {
         fileReader = new FileReader(alreadyScanned);
         htmlScanner = new BufferedReader(fileReader);
         line = null;
-
-        previousBasicInquiries = "";
-        previousPotentials = "";
-        previousDoctors = "";
-        previousTherapists = "";
-        previousProsthetists = "";
-        previousGoodProgressInquiries = "";
-        previousWorkerComps = "";
-        previousCompletedCustomers = "";
-
+////////////////////////////////////////////////////////////////////////////////
+        GlobalVariables.previousBasicInquiries = "";
+        GlobalVariables.previousPotentials = "";
+        GlobalVariables.previousDoctors = "";
+        GlobalVariables.previousTherapists = "";
+        GlobalVariables.previousProsthetists = "";
+        GlobalVariables.previousNurseCaseManagers = "";
+        GlobalVariables.previousGoodProgressInquiries = "";
+        GlobalVariables.previousWorkerComps = "";
+        GlobalVariables.previousCompletedCustomers = "";
+        GlobalVariables.previousCompletedWorkerComp = "";
+////////////////////////////////////////////////////////////////////////////////
         counter = 0;
     }
 
@@ -63,40 +55,46 @@ public class HTML_Parser {
             while (matcher.find()) {
                 switch (counter) {
                     case 0:
-                        previousBasicInquiries = "[" + matcher.group(1);
+                        GlobalVariables.previousBasicInquiries = "[" + matcher.group(1);
                         break;
                     case 1:
-                        previousPotentials = "[" + matcher.group(1);
+                        GlobalVariables.previousPotentials = "[" + matcher.group(1);
                         break;
                     case 2:
-                        previousDoctors = "[" + matcher.group(1);
+                        GlobalVariables.previousDoctors = "[" + matcher.group(1);
                         break;
                     case 3:
-                        previousTherapists = "[" + matcher.group(1);
+                        GlobalVariables.previousTherapists = "[" + matcher.group(1);
                         break;
                     case 4:
-                        previousProsthetists = "[" + matcher.group(1);
+                        GlobalVariables.previousProsthetists = "[" + matcher.group(1);
                         break;
                     case 5:
-                        previousGoodProgressInquiries = "[" + matcher.group(1);
+                        GlobalVariables.previousNurseCaseManagers = "[" + matcher.group(1);
                         break;
                     case 6:
-                        previousWorkerComps = "[" + matcher.group(1);
+                        GlobalVariables.previousGoodProgressInquiries = "[" + matcher.group(1);
                         break;
                     case 7:
-                        previousCompletedCustomers = "[" + matcher.group(1);
+                        GlobalVariables.previousWorkerComps = "[" + matcher.group(1);
+                        break;
+                    case 8:
+                        GlobalVariables.previousCompletedCustomers = "[" + matcher.group(1);
+                        break;
+                    case 9:
+                        GlobalVariables.previousCompletedWorkerComp = "[" + matcher.group(1);
                         break;
                 }
                 counter++;
             }
-            System.out.println(previousBasicInquiries);
-            System.out.println(previousPotentials);
-            System.out.println(previousDoctors);
-            System.out.println(previousTherapists);
-            System.out.println(previousProsthetists);
-            System.out.println(previousGoodProgressInquiries);
-            System.out.println(previousWorkerComps);
-            System.out.println(previousCompletedCustomers);
+            System.out.println(GlobalVariables.previousBasicInquiries);
+            System.out.println(GlobalVariables.previousPotentials);
+            System.out.println(GlobalVariables.previousDoctors);
+            System.out.println(GlobalVariables.previousTherapists);
+            System.out.println(GlobalVariables.previousProsthetists);
+            System.out.println(GlobalVariables.previousGoodProgressInquiries);
+            System.out.println(GlobalVariables.previousWorkerComps);
+            System.out.println(GlobalVariables.previousCompletedCustomers);
         } catch (NoSuchElementException e) {
             htmlScanner.close();
             System.out.println("ERROR in HTML_Scanner");

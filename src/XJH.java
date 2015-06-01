@@ -47,7 +47,7 @@ public class XJH {
     static String type;
     static String city;
     static String phoneNumber;
-    static String peopleCache;
+    static String personCache;
 ////////////////////////////////////////////////////////////////////////////////
     static char quotes = '"';
 
@@ -95,7 +95,7 @@ public class XJH {
         prosthetistOutput = "";
         nurseCaseManagerOutput = "";
         phoneNumber = "";
-        peopleCache = "";
+        personCache = "";
 ////////////////////////////////////////////////////////////////////////////////        
         contactCounter = 0;
         leadCounter = 0;
@@ -207,7 +207,7 @@ public class XJH {
         contact_CSV_Reader = new CsvReader(contactCSV);
         contact_CSV_Reader.readHeaders();
 
-        while (contact_CSV_Reader.readRecord() && contactCounter < 10) {
+        while (contact_CSV_Reader.readRecord() && contactCounter < 15) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -215,7 +215,7 @@ public class XJH {
             type = "";
             city = "";
             phoneNumber = "";
-            peopleCache = "";
+            personCache = "";
 
             city = contact_CSV_Reader.get("Mailing City");
             type = contact_CSV_Reader.get("ID/Status");
@@ -238,21 +238,22 @@ public class XJH {
                         location = location + (tokens[i] + "+");
                     }
                 }
+
+                personCache = name + " " + location;
+
                 if (!GlobalVariables.newFile) {
-                    if (AlreadyWrittenChecker.checkPerson(location)) {
+                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
                         System.out.println("Already have this address in: " + location);
                     } else {
 //                            System.out.println("No match :( " + location);
-                        peopleCache = name + " " + location;
-                        AlreadyWrittenChecker.addToList(peopleCache);
+                        AlreadyWrittenChecker.addToList(personCache);
                         geocode(location, name, input, true, type, phoneNumber);
                     }
                 } else {
-                    peopleCache = name + " " + location;
-                    if (AlreadyWrittenChecker.checkPerson(peopleCache)) {
+                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
                         System.out.println("This person is already on the map.");
                     } else {
-                        AlreadyWrittenChecker.addToList(peopleCache);
+                        AlreadyWrittenChecker.addToList(personCache);
                         geocode(location, name, input, true, type, phoneNumber);
                     }
                 }
@@ -266,7 +267,7 @@ public class XJH {
         lead_CSV_Reader.readHeaders();
         leadCounter = 0;
 
-        while (lead_CSV_Reader.readRecord() & leadCounter < 10) {
+        while (lead_CSV_Reader.readRecord() & leadCounter < 15) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -293,18 +294,25 @@ public class XJH {
                         location = location + (tokens[i] + "+");
                     }
                 }
-//                if (!GlobalVariables.newFile) {
-//                    if (AlreadyWrittenChecker.getAddress(location)) {
-//                        System.out.println("Already have this address in: " + location);
-//                    } else {
-////                            System.out.println("No match :( " + location);
-//                        AlreadyWrittenChecker.addToList(location);
-//                        geocode(location, name, input, type);
-//                    }
-//                } else {
-//                AlreadyWrittenChecker.addToList(location);
-                geocode(location, name, input, false, type, null);
-//                }
+
+                personCache = name + " " + location;
+
+                if (!GlobalVariables.newFile) {
+                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
+                        System.out.println("Already have this address in: " + location);
+                    } else {
+//                            System.out.println("No match :( " + location);
+                        AlreadyWrittenChecker.addToList(personCache);
+                        geocode(location, name, input, false, type, null);
+                    }
+                } else {
+                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
+                        System.out.println("This person is already on the map.");
+                    } else {
+                        AlreadyWrittenChecker.addToList(personCache);
+                        geocode(location, name, input, false, type, null);
+                    }
+                }
                 leadCounter++;
             }
         }
@@ -312,36 +320,98 @@ public class XJH {
 
     public static void writeData() throws IOException {
         writer.write(HTML.getHeader());
-        writer.write(HTML.basicInquiryMarkersOpen());
-        writer.write(basicInquiryOutput);
-        writer.write(HTML.basicInquiryMarkersClose());
-        writer.write(HTML.goodProgressInquiryMarkersOpen());
-        writer.write(goodProgressInquiryOutput);
-        writer.write(HTML.goodProgressInquiryMarkersClose());
-        writer.write(HTML.workerCompMarkersOpen());
-        writer.write(workerCompOutput);
-        writer.write(HTML.workerCompMarkersClose());
-        writer.write(HTML.completedWorkerCompMarkersOpen());
-        writer.write(completedWorkerCompOutput);
-        writer.write(HTML.completedWorkerCompMarkersClose());
-        writer.write(HTML.potentialMarkersOpen());
-        writer.write(potentialClientOutput);
-        writer.write(HTML.potentialMarkersClose());
-        writer.write(HTML.completedCustomerMarkersOpen());
-        writer.write(completedCustomerOutput);
-        writer.write(HTML.completedCustomerMarkersClose());
-        writer.write(HTML.doctorOpen());
-        writer.write(doctorOutput);
-        writer.write(HTML.doctorClose());
-        writer.write(HTML.therapistOpen());
-        writer.write(therapistOutput);
-        writer.write(HTML.therapistClose());
-        writer.write(HTML.prosthetistOpen());
-        writer.write(prosthetistOutput);
-        writer.write(HTML.prosthetistClose());
-        writer.write(HTML.nurseCaseManagerOpen());
-        writer.write(nurseCaseManagerOutput);
-        writer.write(HTML.nurseCaseManagerClose());
+
+        if (!GlobalVariables.newFile) {
+            writer.write(HTML.basicInquiryMarkersOpen());
+            writer.write(basicInquiryOutput);
+            writer.write(GlobalVariables.previousBasicInquiries);
+            writer.write(HTML.basicInquiryMarkersClose());
+
+            writer.write(HTML.potentialMarkersOpen());
+            writer.write(potentialClientOutput);
+            writer.write(GlobalVariables.previousPotentials);
+            writer.write(HTML.potentialMarkersClose());
+
+            writer.write(HTML.doctorOpen());
+            writer.write(doctorOutput);
+            writer.write(GlobalVariables.previousDoctors);
+            writer.write(HTML.doctorClose());
+
+            writer.write(HTML.therapistOpen());
+            writer.write(therapistOutput);
+            writer.write(GlobalVariables.previousTherapists);
+            writer.write(HTML.therapistClose());
+
+            writer.write(HTML.prosthetistOpen());
+            writer.write(prosthetistOutput);
+            writer.write(GlobalVariables.previousProsthetists);
+            writer.write(HTML.prosthetistClose());
+
+            writer.write(HTML.nurseCaseManagerOpen());
+            writer.write(nurseCaseManagerOutput);
+            writer.write(GlobalVariables.previousNurseCaseManagers);
+            writer.write(HTML.nurseCaseManagerClose());
+
+            writer.write(HTML.goodProgressInquiryMarkersOpen());
+            writer.write(goodProgressInquiryOutput);
+            writer.write(GlobalVariables.previousGoodProgressInquiries);
+            writer.write(HTML.goodProgressInquiryMarkersClose());
+
+            writer.write(HTML.workerCompMarkersOpen());
+            writer.write(workerCompOutput);
+            writer.write(GlobalVariables.previousWorkerComps);
+            writer.write(HTML.workerCompMarkersClose());
+
+            writer.write(HTML.completedCustomerMarkersOpen());
+            writer.write(completedCustomerOutput);
+            writer.write(GlobalVariables.previousCompletedCustomers);
+            writer.write(HTML.completedCustomerMarkersClose());
+
+            writer.write(HTML.completedWorkerCompMarkersOpen());
+            writer.write(completedWorkerCompOutput);
+            writer.write(GlobalVariables.previousCompletedWorkerComp);
+            writer.write(HTML.completedWorkerCompMarkersClose());
+        } else {
+            writer.write(HTML.basicInquiryMarkersOpen());
+            writer.write(basicInquiryOutput);
+            writer.write(HTML.basicInquiryMarkersClose());
+
+            writer.write(HTML.potentialMarkersOpen());
+            writer.write(potentialClientOutput);
+            writer.write(HTML.potentialMarkersClose());
+
+            writer.write(HTML.doctorOpen());
+            writer.write(doctorOutput);
+            writer.write(HTML.doctorClose());
+
+            writer.write(HTML.therapistOpen());
+            writer.write(therapistOutput);
+            writer.write(HTML.therapistClose());
+
+            writer.write(HTML.prosthetistOpen());
+            writer.write(prosthetistOutput);
+            writer.write(HTML.prosthetistClose());
+
+            writer.write(HTML.nurseCaseManagerOpen());
+            writer.write(nurseCaseManagerOutput);
+            writer.write(HTML.nurseCaseManagerClose());
+
+            writer.write(HTML.goodProgressInquiryMarkersOpen());
+            writer.write(goodProgressInquiryOutput);
+            writer.write(HTML.goodProgressInquiryMarkersClose());
+
+            writer.write(HTML.workerCompMarkersOpen());
+            writer.write(workerCompOutput);
+            writer.write(HTML.workerCompMarkersClose());
+
+            writer.write(HTML.completedCustomerMarkersOpen());
+            writer.write(completedCustomerOutput);
+            writer.write(HTML.completedCustomerMarkersClose());
+            
+            writer.write(HTML.completedWorkerCompMarkersOpen());
+            writer.write(completedWorkerCompOutput);
+            writer.write(HTML.completedWorkerCompMarkersClose());
+        }
         writer.write(HTML.getFooter());
     }
 }
