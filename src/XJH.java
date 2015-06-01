@@ -48,8 +48,13 @@ public class XJH {
     static String city;
     static String phoneNumber;
     static String personCache;
+    static String newAddress;
+    static String oldAddress;
 ////////////////////////////////////////////////////////////////////////////////
     static char quotes = '"';
+////////////////////////////////////////////////////////////////////////////////
+    final static boolean NEW = true;
+    final static boolean OLD = false;
 
     public static void main(String[] args) throws Exception {
         init();
@@ -96,6 +101,8 @@ public class XJH {
         nurseCaseManagerOutput = "";
         phoneNumber = "";
         personCache = "";
+        newAddress = "";
+        oldAddress = "";
 ////////////////////////////////////////////////////////////////////////////////        
         contactCounter = 0;
         leadCounter = 0;
@@ -125,7 +132,7 @@ public class XJH {
         System.out.println("Done");
     }
 
-    public static void geocode(String address, String name, String prettyAddress, Boolean mode, String type, String phone) throws Exception {
+    public static void geocode(String address, String name, String prettyAddress, String type, String phone, Boolean mode, boolean age) throws Exception {
 ////////clears the variables////////////////////////////////////////////////////
         scanner = null;
         url = null;
@@ -151,47 +158,72 @@ public class XJH {
         System.out.println(res.getString("formatted_address"));
         JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
         System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
-        if (mode) {
-            if (type.contains("Client") || type.contains("Amputee")) {
-                potentialClientOutput = potentialClientOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
-            } else if (type.contains("WC Client")) {
-                completedWorkerCompOutput = completedWorkerCompOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
-            } else if (type.contains("Prosthetist") || type.contains("Orthotist")) {
-                prosthetistOutput = prosthetistOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
-            } else if (type.contains("Doctor")) {
-                doctorOutput = doctorOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
-            } else if (type.contains("Therapist")) {
-                therapistOutput = therapistOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
-            } else if (type.contains("Nurse")) {
-                nurseCaseManagerOutput = nurseCaseManagerOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+////////NEED TO REWRITE THIS IN A PRETTIER WAY//////////////////////////////////
+        if (age) {
+            if (mode) {
+                if (type.contains("Client") || type.contains("Amputee")) {
+                    potentialClientOutput = potentialClientOutput + "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                } else if (type.contains("WC Client")) {
+                    completedWorkerCompOutput = completedWorkerCompOutput + "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                } else if (type.contains("Prosthetist") || type.contains("Orthotist")) {
+                    prosthetistOutput = prosthetistOutput + "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                } else if (type.contains("Doctor")) {
+                    doctorOutput = doctorOutput + "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                } else if (type.contains("Therapist")) {
+                    therapistOutput = therapistOutput + "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                } else if (type.contains("Nurse")) {
+                    nurseCaseManagerOutput = nurseCaseManagerOutput + "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+                }
             } else {
+                if (type.contains("") || type.contains("Amputee")) {
+                    basicInquiryOutput = basicInquiryOutput + "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
+                } else if (type.contains("Potential")) {
+                    goodProgressInquiryOutput = goodProgressInquiryOutput + "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
+                } else if (type.contains("Workers Comp")) {
+                    workerCompOutput = workerCompOutput + "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
+                }
             }
         } else {
-            if (type.contains("") || type.contains("Amputee")) {
-                basicInquiryOutput = basicInquiryOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
-            } else if (type.contains("Potential")) {
-                goodProgressInquiryOutput = goodProgressInquiryOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
-            } else if (type.contains("Workers Comp")) {
-                workerCompOutput = workerCompOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
+            if (mode) {
+                if (type.contains("Client") || type.contains("Amputee")) {
+                    potentialClientOutput = potentialClientOutput;
+                } else if (type.contains("WC Client")) {
+                    completedWorkerCompOutput = completedWorkerCompOutput;
+                } else if (type.contains("Prosthetist") || type.contains("Orthotist")) {
+                    prosthetistOutput = prosthetistOutput;
+                } else if (type.contains("Doctor")) {
+                    doctorOutput = doctorOutput;
+                } else if (type.contains("Therapist")) {
+                    therapistOutput = therapistOutput;
+                } else if (type.contains("Nurse")) {
+                    nurseCaseManagerOutput = nurseCaseManagerOutput;
+                }
             } else {
+                if (type.contains("") || type.contains("Amputee")) {
+                    basicInquiryOutput = basicInquiryOutput;
+                } else if (type.contains("Potential")) {
+                    goodProgressInquiryOutput = goodProgressInquiryOutput;
+                } else if (type.contains("Workers Comp")) {
+                    workerCompOutput = workerCompOutput;
+                }
             }
         }
         System.out.println(type);
@@ -240,25 +272,27 @@ public class XJH {
                 }
 
                 personCache = name + "]" + location;
-                
+
                 AlreadyWrittenChecker.parsePerson(personCache);
-                
+
                 if (!GlobalVariables.newFile) {
                     if (AlreadyWrittenChecker.checkPerson(personCache)) {
                         System.out.println("Already have this one in: " + personCache);
                     } else if (AlreadyWrittenChecker.checkName(name) && !AlreadyWrittenChecker.checkAddress(location)) {
                         System.out.println("ADDRESS CHANGE!!! " + personCache);
+                        geocode(location, name, input, type, phoneNumber, true, OLD);
+                        geocode(AlreadyWrittenChecker.getAddress(), name, input, type, phoneNumber, true, OLD);
                     } else {
 //                            System.out.println("No match :( " + location);
                         AlreadyWrittenChecker.addToList(personCache);
-                        geocode(location, name, input, true, type, phoneNumber);
+                        geocode(location, name, input, type, phoneNumber, true, NEW);
                     }
                 } else {
                     if (AlreadyWrittenChecker.checkPerson(personCache)) {
                         System.out.println("This person is already on the map.");
                     } else {
                         AlreadyWrittenChecker.addToList(personCache);
-                        geocode(location, name, input, true, type, phoneNumber);
+                        geocode(location, name, input, type, phoneNumber, true, NEW);
                     }
                 }
             }

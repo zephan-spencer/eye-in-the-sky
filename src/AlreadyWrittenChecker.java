@@ -80,6 +80,14 @@ public class AlreadyWrittenChecker {
         return address.equals(inputtedAddress);
     }
 
+    public static String getName() {
+        return name;
+    }
+
+    public static String getAddress() {
+        return address;
+    }
+
     public static void closeWrittenChecker() throws IOException {
         alreadyWrittenWriter.close();
     }
