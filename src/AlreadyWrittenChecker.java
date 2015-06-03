@@ -29,7 +29,7 @@ public class AlreadyWrittenChecker {
     }
 
     public static void addToList(String user) throws IOException {
-        alreadyWrittenWriter.write(user + ":");
+        alreadyWrittenWriter.write(user + "]" + ":");
     }
 
     public static boolean checkPerson(String data) throws FileNotFoundException {

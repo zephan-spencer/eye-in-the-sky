@@ -50,6 +50,7 @@ public class XJH {
     static String personCache;
     static String newAddress;
     static String oldAddress;
+    static String tag;
 ////////////////////////////////////////////////////////////////////////////////
     static char quotes = '"';
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,12 +70,12 @@ public class XJH {
             writer.close();
         } else {
             GlobalVariables.newFile = false;
-            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+//            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
             HTML_Parser.parseHTML();
-            initXJHWriter();
-            run();
-            writeData();
-            writer.close();
+//            initXJHWriter();
+//            run();
+//            writeData();
+//            writer.close();
         }
         AlreadyWrittenChecker.closeWrittenChecker();
     }
@@ -103,6 +104,7 @@ public class XJH {
         personCache = "";
         newAddress = "";
         oldAddress = "";
+        tag = "";
 ////////////////////////////////////////////////////////////////////////////////        
         contactCounter = 0;
         leadCounter = 0;
@@ -114,8 +116,8 @@ public class XJH {
         contact_CSV_Reader = null;
         lead_CSV_Reader = null;
         try {
+//          parseLead();
             parseContact();
-//            parseLead();
         } catch (FileNotFoundException ex) {
             System.out.println(ex);
         } catch (UnsupportedEncodingException ex) {
@@ -132,7 +134,8 @@ public class XJH {
         System.out.println("Done");
     }
 
-    public static void geocode(String address, String name, String prettyAddress, String type, String phone, Boolean mode, boolean age) throws Exception {
+    public static void geocode(String address, String name, String prettyAddress, String type,
+            String phone, Boolean mode, boolean age, boolean portion) throws Exception {
 ////////clears the variables////////////////////////////////////////////////////
         scanner = null;
         url = null;
@@ -202,28 +205,51 @@ public class XJH {
                 }
             }
         } else {
-            if (mode) {
+            if (portion == NEW) {
                 if (type.contains("Client") || type.contains("Amputee")) {
-                    potentialClientOutput = potentialClientOutput;
+                    tag = "potentialClientOutput";
+                    newAddress = "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
                 } else if (type.contains("WC Client")) {
-                    completedWorkerCompOutput = completedWorkerCompOutput;
+                    tag = "completedWorkerCompOutput";
+                    newAddress = "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
                 } else if (type.contains("Prosthetist") || type.contains("Orthotist")) {
-                    prosthetistOutput = prosthetistOutput;
+                    tag = "prosthetistOutput";
+                    newAddress = "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
                 } else if (type.contains("Doctor")) {
-                    doctorOutput = doctorOutput;
+                    tag = "doctorOutput";
+                    newAddress = "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
                 } else if (type.contains("Therapist")) {
-                    therapistOutput = therapistOutput;
+                    tag = "therapistOutput";
+                    newAddress = "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
                 } else if (type.contains("Nurse")) {
-                    nurseCaseManagerOutput = nurseCaseManagerOutput;
+                    tag = "nurseCaseManagerOutput";
+                    newAddress = "[" + "\"" + name + ""
+                            + "\", " + loc.getDouble("lat") + ", "
+                            + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
                 }
+                System.out.println("New Address is: " + newAddress);
             } else {
-                if (type.contains("") || type.contains("Amputee")) {
-                    basicInquiryOutput = basicInquiryOutput;
-                } else if (type.contains("Potential")) {
-                    goodProgressInquiryOutput = goodProgressInquiryOutput;
-                } else if (type.contains("Workers Comp")) {
-                    workerCompOutput = workerCompOutput;
-                }
+//              Need to double check the tag for conflicts somehow
+                oldAddress = "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+
+                System.out.println("Old Address is: " + oldAddress);
+                
+                String temp = GlobalVariables.previousPotentials;
+                
+                AddressChanger.changeAddress(oldAddress, newAddress, GlobalVariables.previousPotentials, tag);
+                
             }
         }
         System.out.println(type);
@@ -280,19 +306,19 @@ public class XJH {
                         System.out.println("Already have this one in: " + personCache);
                     } else if (AlreadyWrittenChecker.checkName(name) && !AlreadyWrittenChecker.checkAddress(location)) {
                         System.out.println("ADDRESS CHANGE!!! " + personCache);
-                        geocode(location, name, input, type, phoneNumber, true, OLD);
-                        geocode(AlreadyWrittenChecker.getAddress(), name, input, type, phoneNumber, true, OLD);
+                        geocode(location, name, input, type, phoneNumber, true, OLD, NEW);
+                        geocode(AlreadyWrittenChecker.getAddress(), name, input, type, phoneNumber, true, OLD, OLD);
                     } else {
 //                            System.out.println("No match :( " + location);
                         AlreadyWrittenChecker.addToList(personCache);
-                        geocode(location, name, input, type, phoneNumber, true, NEW);
+                        geocode(location, name, input, type, phoneNumber, true, NEW, NEW);
                     }
                 } else {
                     if (AlreadyWrittenChecker.checkPerson(personCache)) {
                         System.out.println("This person is already on the map.");
                     } else {
                         AlreadyWrittenChecker.addToList(personCache);
-                        geocode(location, name, input, type, phoneNumber, true, NEW);
+                        geocode(location, name, input, type, phoneNumber, true, NEW, NEW);
                     }
                 }
             }
