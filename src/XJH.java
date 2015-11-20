@@ -152,12 +152,16 @@ public class XJH {
         JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
         System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
         if (mode) {
-            if (type.contains("Client") || type.contains("Amputee")) {
+            if (type.contains("Amputee")) {
                 potentialClientOutput = potentialClientOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
                         + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("WC Client")) {
                 completedWorkerCompOutput = completedWorkerCompOutput + "[" + "\"" + name + ""
+                        + "\", " + loc.getDouble("lat") + ", "
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+            } else if (type.contains("Client")) {
+                completedCustomerOutput = completedCustomerOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
                         + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Prosthetist") || type.contains("Orthotist")) {
@@ -179,18 +183,18 @@ public class XJH {
             } else {
             }
         } else {
-            if (type.contains("") || type.contains("Amputee")) {
+            if (type.contains("Amputee")) {
                 basicInquiryOutput = basicInquiryOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Potential")) {
                 goodProgressInquiryOutput = goodProgressInquiryOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else if (type.contains("Workers Comp")) {
                 workerCompOutput = workerCompOutput + "[" + "\"" + name + ""
                         + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "\"" + "],";
+                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else {
             }
         }
@@ -207,7 +211,7 @@ public class XJH {
         contact_CSV_Reader = new CsvReader(contactCSV);
         contact_CSV_Reader.readHeaders();
 
-        while (contact_CSV_Reader.readRecord() && contactCounter < 15) {
+        while (contact_CSV_Reader.readRecord() && contactCounter < 4000) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -221,6 +225,7 @@ public class XJH {
             type = contact_CSV_Reader.get("ID/Status");
             input = contact_CSV_Reader.get("Mailing Street");
             phoneNumber = contact_CSV_Reader.get("Phone");
+
             if (contactCounter > 0 && !type.equals("") && !input.equals("")
                     && !input.contains("P.O.") && !input.contains("PO")) {
                 if (city.equals("")) {
@@ -267,17 +272,20 @@ public class XJH {
         lead_CSV_Reader.readHeaders();
         leadCounter = 0;
 
-        while (lead_CSV_Reader.readRecord() & leadCounter < 15) {
+        while (lead_CSV_Reader.readRecord() & leadCounter < 2000) {
             delims = "[ ]+";
             location = "";
             name = "";
             input = "";
             type = "";
             city = "";
+            phoneNumber = "";
 
             city = lead_CSV_Reader.get("City");
             type = lead_CSV_Reader.get("ID/Status");
             input = lead_CSV_Reader.get("Street");
+            phoneNumber = lead_CSV_Reader.get("Phone");
+
             if (!input.equals("") && !input.contains("P.O.") && !input.contains("\"A\"") && !input.contains("PO")) {
                 if (city.equals("")) {
                     input = input + " " + lead_CSV_Reader.get("State");
@@ -296,21 +304,22 @@ public class XJH {
                 }
 
                 personCache = name + " " + location;
-
-                if (!GlobalVariables.newFile) {
-                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
-                        System.out.println("Already have this address in: " + location);
-                    } else {
+                if (type != "") {
+                    if (!GlobalVariables.newFile) {
+                        if (AlreadyWrittenChecker.checkPerson(personCache)) {
+                            System.out.println("Already have this address in: " + location);
+                        } else {
 //                            System.out.println("No match :( " + location);
-                        AlreadyWrittenChecker.addToList(personCache);
-                        geocode(location, name, input, false, type, null);
-                    }
-                } else {
-                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
-                        System.out.println("This person is already on the map.");
+                            AlreadyWrittenChecker.addToList(personCache);
+                            geocode(location, name, input, false, type, phoneNumber);
+                        }
                     } else {
-                        AlreadyWrittenChecker.addToList(personCache);
-                        geocode(location, name, input, false, type, null);
+                        if (AlreadyWrittenChecker.checkPerson(personCache)) {
+                            System.out.println("This person is already on the map.");
+                        } else {
+                            AlreadyWrittenChecker.addToList(personCache);
+                            geocode(location, name, input, false, type, phoneNumber);
+                        }
                     }
                 }
                 leadCounter++;
@@ -407,7 +416,7 @@ public class XJH {
             writer.write(HTML.completedCustomerMarkersOpen());
             writer.write(completedCustomerOutput);
             writer.write(HTML.completedCustomerMarkersClose());
-            
+
             writer.write(HTML.completedWorkerCompMarkersOpen());
             writer.write(completedWorkerCompOutput);
             writer.write(HTML.completedWorkerCompMarkersClose());
