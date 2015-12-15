@@ -46,6 +46,7 @@ public class XJH {
     static String nurseCaseManagerOutput;
     static String type;
     static String city;
+    static String state;
     static String phoneNumber;
     static String personCache;
 ////////////////////////////////////////////////////////////////////////////////
@@ -84,6 +85,7 @@ public class XJH {
         location = "";
         name = "";
         city = "";
+        state = "";
         basicInquiryOutput = "";
         goodProgressInquiryOutput = "";
         workerCompOutput = "";
@@ -211,16 +213,17 @@ public class XJH {
         contact_CSV_Reader = new CsvReader(contactCSV);
         contact_CSV_Reader.readHeaders();
 
-        while (contact_CSV_Reader.readRecord() && contactCounter < 4000) {
+        while (contact_CSV_Reader.readRecord() && contactCounter < 25) {
             delims = "[ ]+";
             location = "";
             name = "";
             input = "";
             type = "";
             city = "";
+            state = "";
             phoneNumber = "";
             personCache = "";
-
+            state = contact_CSV_Reader.get("Mailing State");
             city = contact_CSV_Reader.get("Mailing City");
             type = contact_CSV_Reader.get("ID/Status");
             input = contact_CSV_Reader.get("Mailing Street");
@@ -229,10 +232,10 @@ public class XJH {
             if (contactCounter > 0 && !type.equals("") && !input.equals("")
                     && !input.contains("P.O.") && !input.contains("PO")) {
                 if (city.equals("")) {
-                    input = input + " " + contact_CSV_Reader.get("Mailing State");
+                    input = input + " " + state;
                     name = contact_CSV_Reader.get("Last Name") + ", " + contact_CSV_Reader.get("First Name");
                 } else {
-                    input = input + " " + city + " " + contact_CSV_Reader.get("Mailing State");
+                    input = input + " " + city + " " + state;
                     name = contact_CSV_Reader.get("Last Name") + ", " + contact_CSV_Reader.get("First Name");
                 }
                 tokens = input.split(delims);
@@ -272,7 +275,7 @@ public class XJH {
         lead_CSV_Reader.readHeaders();
         leadCounter = 0;
 
-        while (lead_CSV_Reader.readRecord() & leadCounter < 2000) {
+        while (lead_CSV_Reader.readRecord() & leadCounter < 500) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -381,43 +384,43 @@ public class XJH {
             writer.write(GlobalVariables.previousCompletedWorkerComp);
             writer.write(HTML.completedWorkerCompMarkersClose());
         } else {
-            writer.write(HTML.basicInquiryMarkersOpen());
+            writer.write(HTML.basicInquiryMarkersOpenInit());
             writer.write(basicInquiryOutput);
             writer.write(HTML.basicInquiryMarkersClose());
 
-            writer.write(HTML.potentialMarkersOpen());
+            writer.write(HTML.potentialMarkersOpenInit());
             writer.write(potentialClientOutput);
             writer.write(HTML.potentialMarkersClose());
 
-            writer.write(HTML.doctorOpen());
+            writer.write(HTML.doctorOpenInit());
             writer.write(doctorOutput);
             writer.write(HTML.doctorClose());
 
-            writer.write(HTML.therapistOpen());
+            writer.write(HTML.therapistOpenInit());
             writer.write(therapistOutput);
             writer.write(HTML.therapistClose());
 
-            writer.write(HTML.prosthetistOpen());
+            writer.write(HTML.prosthetistOpenInit());
             writer.write(prosthetistOutput);
             writer.write(HTML.prosthetistClose());
 
-            writer.write(HTML.nurseCaseManagerOpen());
+            writer.write(HTML.nurseCaseManagerOpenInit());
             writer.write(nurseCaseManagerOutput);
             writer.write(HTML.nurseCaseManagerClose());
 
-            writer.write(HTML.goodProgressInquiryMarkersOpen());
+            writer.write(HTML.goodProgressInquiryMarkersOpenInit());
             writer.write(goodProgressInquiryOutput);
             writer.write(HTML.goodProgressInquiryMarkersClose());
 
-            writer.write(HTML.workerCompMarkersOpen());
+            writer.write(HTML.workerCompMarkersOpenInit());
             writer.write(workerCompOutput);
             writer.write(HTML.workerCompMarkersClose());
 
-            writer.write(HTML.completedCustomerMarkersOpen());
+            writer.write(HTML.completedCustomerMarkersOpenInit());
             writer.write(completedCustomerOutput);
             writer.write(HTML.completedCustomerMarkersClose());
 
-            writer.write(HTML.completedWorkerCompMarkersOpen());
+            writer.write(HTML.completedWorkerCompMarkersOpenInit());
             writer.write(completedWorkerCompOutput);
             writer.write(HTML.completedWorkerCompMarkersClose());
         }

@@ -54,35 +54,46 @@ public class HTML_Parser {
             setMatcher();
             while (matcher.find()) {
                 switch (counter) {
+                    
                     case 0:
                         GlobalVariables.previousBasicInquiries = "[" + matcher.group(1);
+                        System.out.println("Basic Inquiries:" + GlobalVariables.previousBasicInquiries);
                         break;
                     case 1:
                         GlobalVariables.previousPotentials = "[" + matcher.group(1);
+                        System.out.println("Potentials:" + GlobalVariables.previousPotentials);
                         break;
                     case 2:
                         GlobalVariables.previousDoctors = "[" + matcher.group(1);
+                        System.out.println("Doctors:" + GlobalVariables.previousDoctors);
                         break;
                     case 3:
                         GlobalVariables.previousTherapists = "[" + matcher.group(1);
+                        System.out.println("Therapists:" + GlobalVariables.previousTherapists);
                         break;
                     case 4:
                         GlobalVariables.previousProsthetists = "[" + matcher.group(1);
+                        System.out.println("Prosthetists:" + GlobalVariables.previousProsthetists);
                         break;
                     case 5:
                         GlobalVariables.previousNurseCaseManagers = "[" + matcher.group(1);
+                        System.out.println("Nurse Case Managers:" + GlobalVariables.previousNurseCaseManagers);
                         break;
                     case 6:
                         GlobalVariables.previousGoodProgressInquiries = "[" + matcher.group(1);
+                        System.out.println("Good Progress:" + GlobalVariables.previousGoodProgressInquiries);
                         break;
                     case 7:
                         GlobalVariables.previousWorkerComps = "[" + matcher.group(1);
+                        System.out.println("Worker Comps:" + GlobalVariables.previousWorkerComps);
                         break;
                     case 8:
                         GlobalVariables.previousCompletedCustomers = "[" + matcher.group(1);
+                        System.out.println("Completed Customers:" + GlobalVariables.previousCompletedCustomers);
                         break;
                     case 9:
                         GlobalVariables.previousCompletedWorkerComp = "[" + matcher.group(1);
+                        System.out.println("Completed Worker Comp:" + GlobalVariables.previousCompletedWorkerComp);
                         break;
                 }
                 counter++;

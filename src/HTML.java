@@ -1,6 +1,10 @@
 
 public class HTML {
 
+    public static String basicInquiryMarkersOpenInit() {
+        return "var basicInquiryMarkers = [[],";
+    }
+    
     public static String basicInquiryMarkersOpen() {
         return "var basicInquiryMarkers = [";
     }
@@ -9,10 +13,22 @@ public class HTML {
         return "];\n";
     }
 
+    public static String workerCompMarkersOpenInit() {
+        return "var workerCompMarkers = [[],";
+    }
+    
     public static String workerCompMarkersOpen() {
         return "var workerCompMarkers = [";
     }
+    
+    public static String workerCompMarkersClose() {
+        return "];\n";
+    }
 
+    public static String completedWorkerCompMarkersOpenInit() {
+        return "var completedWorkerCompMarkers = [[],";
+    }
+    
     public static String completedWorkerCompMarkersOpen() {
         return "var completedWorkerCompMarkers = [";
     }
@@ -20,11 +36,11 @@ public class HTML {
     public static String completedWorkerCompMarkersClose() {
         return "];\n ";
     }
-
-    public static String workerCompMarkersClose() {
-        return "];\n";
+    
+    public static String goodProgressInquiryMarkersOpenInit() {
+        return "var goodProgressInquiryMarkers = [[],";
     }
-
+    
     public static String goodProgressInquiryMarkersOpen() {
         return "var goodProgressInquiryMarkers = [";
     }
@@ -33,14 +49,23 @@ public class HTML {
         return "];\n";
     }
 
+    public static String potentialMarkersOpenInit() {
+        return "var potentialMarkers = [[],";
+    }
+    
     public static String potentialMarkersOpen() {
         return "var potentialMarkers = [";
     }
+
 
     public static String potentialMarkersClose() {
         return "];\n";
     }
 
+    public static String completedCustomerMarkersOpenInit() {
+        return "var completedCustomerMarkers = [[],";
+    }
+    
     public static String completedCustomerMarkersOpen() {
         return "var completedCustomerMarkers = [";
     }
@@ -49,6 +74,10 @@ public class HTML {
         return "];\n";
     }
 
+    public static String doctorOpenInit() {
+        return "var doctorMarkers = [[],";
+    }
+    
     public static String doctorOpen() {
         return "var doctorMarkers = [";
     }
@@ -57,6 +86,10 @@ public class HTML {
         return " ];\n";
     }
 
+    public static String therapistOpenInit() {
+        return "var therapistMarkers = [[],";
+    }
+    
     public static String therapistOpen() {
         return "var therapistMarkers = [";
     }
@@ -66,6 +99,10 @@ public class HTML {
                 + "			   ];\n";
     }
 
+    public static String nurseCaseManagerOpenInit() {
+        return " var nurseCaseManagerMarkers = [[],";
+    }
+    
     public static String nurseCaseManagerOpen() {
         return " var nurseCaseManagerMarkers = [";
     }
@@ -74,6 +111,10 @@ public class HTML {
         return " ]; \n";
     }
 
+    public static String prosthetistOpenInit() {
+        return " var prosthetistMarkers = [[],";
+    }
+    
     public static String prosthetistOpen() {
         return " var prosthetistMarkers = [";
     }
