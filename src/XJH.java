@@ -213,7 +213,7 @@ public class XJH {
         contact_CSV_Reader = new CsvReader(contactCSV);
         contact_CSV_Reader.readHeaders();
 
-        while (contact_CSV_Reader.readRecord() && contactCounter < 25) {
+        while (contact_CSV_Reader.readRecord() && contactCounter < 50) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -275,7 +275,7 @@ public class XJH {
         lead_CSV_Reader.readHeaders();
         leadCounter = 0;
 
-        while (lead_CSV_Reader.readRecord() & leadCounter < 500) {
+        while (lead_CSV_Reader.readRecord() & leadCounter < 1050) {
             delims = "[ ]+";
             location = "";
             name = "";
