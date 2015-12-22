@@ -8,30 +8,46 @@ import java.util.Scanner;
 
 public class AlreadyWrittenChecker {
 
-    private final static String parsedData = "alreadyScanned.txt";
+    private final static String parsedLeads = "alreadyScannedLeads.txt";
+    private final static String parsedContacts = "alreadyScannedContacts.txt";
 ////////////////////////////////////////////////////////////////////////////////
-    private static FileWriter alreadyWrittenWriter;
+    private static FileWriter alreadyWrittenLeadsWriter;
+    private static FileWriter alreadyWrittenContactsWriter;
 ////////////////////////////////////////////////////////////////////////////////
     private static Scanner alreadyWrittenReader;
 ////////////////////////////////////////////////////////////////////////////////
 
-    public static void alreadyWrittenCheckerInit() throws IOException {
+    public static void alreadyWrittenLeadsInit() throws IOException {
 
         if (GlobalVariables.newFile) {
-            alreadyWrittenWriter = new FileWriter(parsedData, false);
+            alreadyWrittenLeadsWriter = new FileWriter(parsedLeads, false);
         } else {
-            alreadyWrittenWriter = new FileWriter(parsedData, true);
-            initScanner();
+            alreadyWrittenLeadsWriter = new FileWriter(parsedLeads, true);
+            initScanner(parsedLeads);
         }
     }
 
-    public static void addToList(String user) throws IOException {
-        alreadyWrittenWriter.write(user + ":");
+    public static void alreadyWrittenContactsInit() throws IOException {
+
+        if (GlobalVariables.newFile) {
+            alreadyWrittenContactsWriter = new FileWriter(parsedContacts, false);
+        } else {
+            alreadyWrittenContactsWriter = new FileWriter(parsedContacts, true);
+            initScanner(parsedContacts);
+        }
     }
 
-    public static boolean checkPerson(String data) throws FileNotFoundException {
+    public static void addLeadToList(String user) throws IOException {
+        alreadyWrittenLeadsWriter.write(user + ":");
+    }
+
+    public static void addContactToList(String user) throws IOException {
+        alreadyWrittenContactsWriter.write(user + ":");
+    }
+
+    public static boolean checkLeads(String data) throws FileNotFoundException {
         try {
-            alreadyWrittenReader = new Scanner(new File(parsedData));
+            alreadyWrittenReader = new Scanner(new File(parsedLeads));
             alreadyWrittenReader.useDelimiter(":");
             while (true) {
                 String temp = "";
@@ -47,12 +63,31 @@ public class AlreadyWrittenChecker {
         }
     }
 
-    public static void closeWrittenChecker() throws IOException {
-        alreadyWrittenWriter.close();
+    public static boolean checkContacts(String data) throws FileNotFoundException {
+        try {
+            alreadyWrittenReader = new Scanner(new File(parsedContacts));
+            alreadyWrittenReader.useDelimiter(":");
+            while (true) {
+                String temp = "";
+                temp = alreadyWrittenReader.next();
+                if (!data.equals(temp)) {
+                } else {
+                    return true;
+                }
+            }
+
+        } catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
-    public static void initScanner() throws FileNotFoundException {
-        alreadyWrittenReader = new Scanner(new File(parsedData));
+    public static void closeWrittenCheckers() throws IOException {
+        alreadyWrittenLeadsWriter.close();
+        alreadyWrittenContactsWriter.close();
+    }
+
+    public static void initScanner(String fileName) throws FileNotFoundException {
+        alreadyWrittenReader = new Scanner(new File(fileName));
         alreadyWrittenReader.useDelimiter(":");
     }
 }
