@@ -23,8 +23,7 @@ public class XJH {
 ////////////////////////////////////////////////////////////////////////////////
     static String[] tokens;
 ////////////////////////////////////////////////////////////////////////////////
-    static int contactCounter;
-    static int leadCounter;
+    static int counter;
 ////////////////////////////////////////////////////////////////////////////////
     static String delims;
     static String input;
@@ -99,8 +98,7 @@ public class XJH {
         phoneNumber = "";
         personCache = "";
 ////////////////////////////////////////////////////////////////////////////////        
-        contactCounter = 0;
-        leadCounter = 0;
+        counter = 0;
 ////////////////////////////////////////////////////////////////////////////////        
         mainScanner = new Scanner(System.in);
     }
@@ -200,6 +198,7 @@ public class XJH {
             } else {
             }
         }
+        counter++;
         System.out.println(type);
         Thread.sleep(200);
     }
@@ -213,7 +212,7 @@ public class XJH {
         contact_CSV_Reader = new CsvReader(contactCSV);
         contact_CSV_Reader.readHeaders();
 
-        while (contact_CSV_Reader.readRecord() && contactCounter < 50) {
+        while (contact_CSV_Reader.readRecord() && counter < 3000) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -229,7 +228,7 @@ public class XJH {
             input = contact_CSV_Reader.get("Mailing Street");
             phoneNumber = contact_CSV_Reader.get("Phone");
 
-            if (contactCounter > 0 && !type.equals("") && !input.equals("")
+            if (!type.equals("") && !input.equals("")
                     && !input.contains("P.O.") && !input.contains("PO")) {
                 if (city.equals("")) {
                     input = input + " " + state;
@@ -266,16 +265,14 @@ public class XJH {
                     }
                 }
             }
-            contactCounter++;
         }
     }
 
     public static void parseLead() throws IOException, Exception {
         lead_CSV_Reader = new CsvReader(leadCSV);
         lead_CSV_Reader.readHeaders();
-        leadCounter = 0;
 
-        while (lead_CSV_Reader.readRecord() & leadCounter < 1050) {
+        while (lead_CSV_Reader.readRecord() && counter < 3000) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -325,7 +322,6 @@ public class XJH {
                         }
                     }
                 }
-                leadCounter++;
             }
         }
     }
