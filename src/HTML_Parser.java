@@ -57,55 +57,55 @@ public class HTML_Parser {
                     
                     case 0:
                         GlobalVariables.previousBasicInquiries = "[" + matcher.group(1);
-                        System.out.println("Basic Inquiries:" + GlobalVariables.previousBasicInquiries);
+//                        System.out.println("Basic Inquiries:" + GlobalVariables.previousBasicInquiries);
                         break;
                     case 1:
                         GlobalVariables.previousPotentials = "[" + matcher.group(1);
-                        System.out.println("Potentials:" + GlobalVariables.previousPotentials);
+//                        System.out.println("Potentials:" + GlobalVariables.previousPotentials);
                         break;
                     case 2:
                         GlobalVariables.previousDoctors = "[" + matcher.group(1);
-                        System.out.println("Doctors:" + GlobalVariables.previousDoctors);
+//                        System.out.println("Doctors:" + GlobalVariables.previousDoctors);
                         break;
                     case 3:
                         GlobalVariables.previousTherapists = "[" + matcher.group(1);
-                        System.out.println("Therapists:" + GlobalVariables.previousTherapists);
+//                        System.out.println("Therapists:" + GlobalVariables.previousTherapists);
                         break;
                     case 4:
                         GlobalVariables.previousProsthetists = "[" + matcher.group(1);
-                        System.out.println("Prosthetists:" + GlobalVariables.previousProsthetists);
+//                        System.out.println("Prosthetists:" + GlobalVariables.previousProsthetists);
                         break;
                     case 5:
                         GlobalVariables.previousNurseCaseManagers = "[" + matcher.group(1);
-                        System.out.println("Nurse Case Managers:" + GlobalVariables.previousNurseCaseManagers);
+//                        System.out.println("Nurse Case Managers:" + GlobalVariables.previousNurseCaseManagers);
                         break;
                     case 6:
                         GlobalVariables.previousGoodProgressInquiries = "[" + matcher.group(1);
-                        System.out.println("Good Progress:" + GlobalVariables.previousGoodProgressInquiries);
+//                        System.out.println("Good Progress:" + GlobalVariables.previousGoodProgressInquiries);
                         break;
                     case 7:
                         GlobalVariables.previousWorkerComps = "[" + matcher.group(1);
-                        System.out.println("Worker Comps:" + GlobalVariables.previousWorkerComps);
+//                        System.out.println("Worker Comps:" + GlobalVariables.previousWorkerComps);
                         break;
                     case 8:
                         GlobalVariables.previousCompletedCustomers = "[" + matcher.group(1);
-                        System.out.println("Completed Customers:" + GlobalVariables.previousCompletedCustomers);
+//                        System.out.println("Completed Customers:" + GlobalVariables.previousCompletedCustomers);
                         break;
                     case 9:
                         GlobalVariables.previousCompletedWorkerComp = "[" + matcher.group(1);
-                        System.out.println("Completed Worker Comp:" + GlobalVariables.previousCompletedWorkerComp);
+//                        System.out.println("Completed Worker Comp:" + GlobalVariables.previousCompletedWorkerComp);
                         break;
                 }
                 counter++;
             }
-            System.out.println(GlobalVariables.previousBasicInquiries);
-            System.out.println(GlobalVariables.previousPotentials);
-            System.out.println(GlobalVariables.previousDoctors);
-            System.out.println(GlobalVariables.previousTherapists);
-            System.out.println(GlobalVariables.previousProsthetists);
-            System.out.println(GlobalVariables.previousGoodProgressInquiries);
-            System.out.println(GlobalVariables.previousWorkerComps);
-            System.out.println(GlobalVariables.previousCompletedCustomers);
+//            System.out.println(GlobalVariables.previousBasicInquiries);
+//            System.out.println(GlobalVariables.previousPotentials);
+//            System.out.println(GlobalVariables.previousDoctors);
+//            System.out.println(GlobalVariables.previousTherapists);
+//            System.out.println(GlobalVariables.previousProsthetists);
+//            System.out.println(GlobalVariables.previousGoodProgressInquiries);
+//            System.out.println(GlobalVariables.previousWorkerComps);
+//            System.out.println(GlobalVariables.previousCompletedCustomers);
         } catch (NoSuchElementException e) {
             htmlScanner.close();
             System.out.println("ERROR in HTML_Scanner");
