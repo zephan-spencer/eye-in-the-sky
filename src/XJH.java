@@ -28,8 +28,9 @@ public class XJH {
     static String delims;
     static String input;
     static String location;
-    static String contactCSV = "/Users/taz98/Downloads/contact.csv";
-    static String leadCSV = "/Users/taz98/Downloads/lead.csv";
+    static String contactCSV = "";
+    static String leadCSV = "";
+    static String userName = "";
     static String line = "";
     static String cvsSplitBy = ",";
     static String name;
@@ -53,7 +54,11 @@ public class XJH {
 
     public static void main(String[] args) throws Exception {
         init();
-
+        System.out.println("Please enter your username as it appears under C:\\Users");
+        System.out.println("Also, please make sure that the CSV files are inside the download folder. They must be named contact.csv and lead.csv");
+        userName = mainScanner.nextLine();
+        contactCSV = "/Users/" + userName + "/Downloads/contact.csv";
+        leadCSV = "/Users/" + userName + "/Downloads/lead.csv";
         System.out.println("Would you like to create a new file? Yes/No");
         if (mainScanner.hasNext("yes") || mainScanner.hasNext("Yes")) {
             GlobalVariables.newFile = true;
