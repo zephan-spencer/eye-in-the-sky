@@ -28,8 +28,8 @@ public class XJH {
     static String delims;
     static String input;
     static String location;
-    static String contactCSV = "/Users/Emil/Downloads/contact.csv";
-    static String leadCSV = "/Users/Emil/Downloads/lead.csv";
+    static String contactCSV = "/Users/taz98/Downloads/contact.csv";
+    static String leadCSV = "/Users/taz98/Downloads/lead.csv";
     static String line = "";
     static String cvsSplitBy = ",";
     static String name;
@@ -119,6 +119,7 @@ public class XJH {
             System.out.println(eg);
         } finally {
             System.out.println("Made it to close!");
+            System.out.println("There are" + counter + "people on the map.");
             contact_CSV_Reader.close();
             lead_CSV_Reader.close();
         }
@@ -142,15 +143,24 @@ public class XJH {
         scanner.close();
 ////////build a JSON object/////////////////////////////////////////////////////
         JSONObject obj = new JSONObject(str);
-        if (!obj.getString("status").equals("OK")) {
+        if (obj.getString("status").equals("OVER_QUERY_LIMIT")) {
+            System.out.println("The daily quota for map requests has been exceeded. Please connect to another external IP address or wait until the day is over.");
+            writeData();
+            writer.close();
+            AlreadyWrittenChecker.closeWrittenChecker();
+            System.out.println("There are " + counter + " people on the map.");
+            System.exit(0);
+        } else if (!obj.getString("status").equals("OK")) {
             System.out.println(str);
             return;
+        } else {
         }
 ////////get the first result////////////////////////////////////////////////////
         JSONObject res = obj.getJSONArray("results").getJSONObject(0);
         System.out.println(res.getString("formatted_address"));
         JSONObject loc = res.getJSONObject("geometry").getJSONObject("location");
         System.out.println("lat: " + loc.getDouble("lat") + ", lng: " + loc.getDouble("lng"));
+
         if (mode) {
             if (type.contains("Amputee")) {
                 potentialClientOutput = potentialClientOutput + "[" + "\"" + name + ""
@@ -182,24 +192,23 @@ public class XJH {
                         + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
             } else {
             }
+        } else if (type.contains("Amputee")) {
+            basicInquiryOutput = basicInquiryOutput + "[" + "\"" + name + ""
+                    + "\", " + loc.getDouble("lat") + ", "
+                    + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+        } else if (type.contains("Potential")) {
+            goodProgressInquiryOutput = goodProgressInquiryOutput + "[" + "\"" + name + ""
+                    + "\", " + loc.getDouble("lat") + ", "
+                    + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
+        } else if (type.contains("Workers Comp")) {
+            workerCompOutput = workerCompOutput + "[" + "\"" + name + ""
+                    + "\", " + loc.getDouble("lat") + ", "
+                    + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
         } else {
-            if (type.contains("Amputee")) {
-                basicInquiryOutput = basicInquiryOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
-            } else if (type.contains("Potential")) {
-                goodProgressInquiryOutput = goodProgressInquiryOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
-            } else if (type.contains("Workers Comp")) {
-                workerCompOutput = workerCompOutput + "[" + "\"" + name + ""
-                        + "\", " + loc.getDouble("lat") + ", "
-                        + loc.getDouble("lng") + ", " + "\"" + "<h1>" + name + "</h1>" + "<p>" + prettyAddress + "</p>" + "<p>" + phone + "</p>" + "\"" + "],";
-            } else {
-            }
         }
         counter++;
-        System.out.println(type);
+        AlreadyWrittenChecker.addToList(personCache);
+//        System.out.println(type);
         Thread.sleep(200);
     }
 
@@ -212,7 +221,7 @@ public class XJH {
         contact_CSV_Reader = new CsvReader(contactCSV);
         contact_CSV_Reader.readHeaders();
 
-        while (contact_CSV_Reader.readRecord() && counter < 3000) {
+        while (contact_CSV_Reader.readRecord()) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -251,18 +260,16 @@ public class XJH {
                 if (!GlobalVariables.newFile) {
                     if (AlreadyWrittenChecker.checkPerson(personCache)) {
                         System.out.println("Already have this address in: " + location);
+                        counter++;
                     } else {
 //                            System.out.println("No match :( " + location);
-                        AlreadyWrittenChecker.addToList(personCache);
                         geocode(location, name, input, true, type, phoneNumber);
                     }
+                } else if (AlreadyWrittenChecker.checkPerson(personCache)) {
+                    System.out.println("This person is already on the map.");
+                    counter++;
                 } else {
-                    if (AlreadyWrittenChecker.checkPerson(personCache)) {
-                        System.out.println("This person is already on the map.");
-                    } else {
-                        AlreadyWrittenChecker.addToList(personCache);
-                        geocode(location, name, input, true, type, phoneNumber);
-                    }
+                    geocode(location, name, input, true, type, phoneNumber);
                 }
             }
         }
@@ -272,7 +279,7 @@ public class XJH {
         lead_CSV_Reader = new CsvReader(leadCSV);
         lead_CSV_Reader.readHeaders();
 
-        while (lead_CSV_Reader.readRecord() && counter < 3000) {
+        while (lead_CSV_Reader.readRecord()) {
             delims = "[ ]+";
             location = "";
             name = "";
@@ -310,16 +317,12 @@ public class XJH {
                             System.out.println("Already have this address in: " + location);
                         } else {
 //                            System.out.println("No match :( " + location);
-                            AlreadyWrittenChecker.addToList(personCache);
                             geocode(location, name, input, false, type, phoneNumber);
                         }
+                    } else if (AlreadyWrittenChecker.checkPerson(personCache)) {
+                        System.out.println("This person is already on the map.");
                     } else {
-                        if (AlreadyWrittenChecker.checkPerson(personCache)) {
-                            System.out.println("This person is already on the map.");
-                        } else {
-                            AlreadyWrittenChecker.addToList(personCache);
-                            geocode(location, name, input, false, type, phoneNumber);
-                        }
+                        geocode(location, name, input, false, type, phoneNumber);
                     }
                 }
             }
