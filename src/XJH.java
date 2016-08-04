@@ -77,6 +77,7 @@ public class XJH {
             writer.close();
         }
         AlreadyWrittenChecker.closeWrittenChecker();
+        pressAnyKey();
     }
 
     public static void init() throws IOException {
@@ -154,8 +155,13 @@ public class XJH {
             writer.close();
             AlreadyWrittenChecker.closeWrittenChecker();
             System.out.println("There are " + counter + " people on the map.");
-            System.exit(0);
+            
+            pressAnyKey();
+            while (true) {
+                System.exit(0);
+            }
         } else if (!obj.getString("status").equals("OK")) {
+            System.out.println("There has been an error for the address: " + address);
             System.out.println(str);
             return;
         } else {
@@ -243,7 +249,7 @@ public class XJH {
             phoneNumber = contact_CSV_Reader.get("Phone");
 
             if (!type.equals("") && !input.equals("")
-                    && !input.contains("P.O.") && !input.contains("PO")) {
+                    && !input.contains("P.O.") && !input.contains("#") && !input.contains("PO")) {
                 if (city.equals("")) {
                     input = input + " " + state;
                     name = contact_CSV_Reader.get("Last Name") + ", " + contact_CSV_Reader.get("First Name");
@@ -298,7 +304,7 @@ public class XJH {
             input = lead_CSV_Reader.get("Street");
             phoneNumber = lead_CSV_Reader.get("Phone");
 
-            if (!input.equals("") && !input.contains("P.O.") && !input.contains("\"A\"") && !input.contains("PO")) {
+            if (!input.equals("") && !input.contains("P.O.") && !input.contains("\"A\"") && !input.contains("PO") && !input.contains("#")) {
                 if (city.equals("")) {
                     input = input + " " + lead_CSV_Reader.get("State");
                     name = lead_CSV_Reader.get("Last Name") + ", " + lead_CSV_Reader.get("First Name");
@@ -429,5 +435,13 @@ public class XJH {
             writer.write(HTML.completedWorkerCompMarkersClose());
         }
         writer.write(HTML.getFooter());
+    }
+
+    public static void pressAnyKey() {
+        System.out.print("Enter any key to continue: ");
+        try {
+            System.in.read();
+        } catch (Exception e) {
+        }
     }
 }
