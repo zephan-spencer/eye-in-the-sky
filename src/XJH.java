@@ -33,6 +33,7 @@ public class XJH {
     static String userName = "";
     static String line = "";
     static String cvsSplitBy = ",";
+    static String errors;
     static String name;
     static String basicInquiryOutput;
     static String goodProgressInquiryOutput;
@@ -53,31 +54,34 @@ public class XJH {
     static char quotes = '"';
 
     public static void main(String[] args) throws Exception {
-        init();
-        System.out.println("Please enter your username as it appears under C:\\Users");
-        System.out.println("Also, please make sure that the CSV files are inside the download folder. They must be named contact.csv and lead.csv");
-        userName = mainScanner.nextLine();
-        contactCSV = "/Users/" + userName + "/Downloads/contact.csv";
-        leadCSV = "/Users/" + userName + "/Downloads/lead.csv";
-        System.out.println("Would you like to create a new file? Yes/No");
-        if (mainScanner.hasNext("yes") || mainScanner.hasNext("Yes")) {
-            GlobalVariables.newFile = true;
-            initXJHWriter();
-            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
-            run();
-            writeData();
-            writer.close();
-        } else {
-            GlobalVariables.newFile = false;
-            AlreadyWrittenChecker.alreadyWrittenCheckerInit();
-            HTML_Parser.parseHTML();
-            initXJHWriter();
-            run();
-            writeData();
-            writer.close();
-        }
-        AlreadyWrittenChecker.closeWrittenChecker();
-        pressAnyKey();
+            System.out.println("Welcome to the Eye in the Sky map generator Version 1.0");
+            pressAnyKey();
+            init();
+            System.out.println("Please enter your username as it appears under C:\\Users");
+            System.out.println("Also, please make sure that the CSV files are inside the download folder. They must be named contact.csv and lead.csv");
+            userName = mainScanner.nextLine();
+            contactCSV = "/Users/" + userName + "/Downloads/contact.csv";
+            leadCSV = "/Users/" + userName + "/Downloads/lead.csv";
+            System.out.println("Would you like to create a new file? Yes/No");
+            if (mainScanner.hasNext("yes") || mainScanner.hasNext("Yes")) {
+                GlobalVariables.newFile = true;
+                initXJHWriter();
+                AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+                run();
+                writeData();
+                writer.close();
+            } else {
+                GlobalVariables.newFile = false;
+                AlreadyWrittenChecker.alreadyWrittenCheckerInit();
+                HTML_Parser.parseHTML();
+                initXJHWriter();
+                run();
+                writeData();
+                writer.close();
+            }
+            AlreadyWrittenChecker.closeWrittenChecker();
+            System.out.println(errors);
+            pressAnyKey();
     }
 
     public static void init() throws IOException {
@@ -136,17 +140,25 @@ public class XJH {
 ////////clears the variables////////////////////////////////////////////////////
         scanner = null;
         url = null;
-////////builds a URL////////////////////////////////////////////////////////////
-        String googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address;
-        URLEncoder.encode(googleURL, "UTF-8");
-        url = new URL(googleURL);
-        scanner = new Scanner(url.openStream());
-////////read from the URL///////////////////////////////////////////////////////
         String str = new String();
-        while (scanner.hasNext()) {
-            str += scanner.nextLine();
+
+        try {
+////////builds a URL////////////////////////////////////////////////////////////
+            String googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address;
+            URLEncoder.encode(googleURL, "UTF-8");
+            url = new URL(googleURL);
+            scanner = new Scanner(url.openStream());
+////////read from the URL///////////////////////////////////////////////////////
+            while (scanner.hasNext()) {
+                str += scanner.nextLine();
+            }
+            scanner.close();
+        } catch (IOException e) {
+            System.out.println(e);
+            System.out.println("There has been an error with: " + prettyAddress);
+            errors += prettyAddress;
+            return;
         }
-        scanner.close();
 ////////build a JSON object/////////////////////////////////////////////////////
         JSONObject obj = new JSONObject(str);
         if (obj.getString("status").equals("OVER_QUERY_LIMIT")) {
@@ -155,14 +167,15 @@ public class XJH {
             writer.close();
             AlreadyWrittenChecker.closeWrittenChecker();
             System.out.println("There are " + counter + " people on the map.");
-            
+
             pressAnyKey();
             while (true) {
                 System.exit(0);
             }
         } else if (!obj.getString("status").equals("OK")) {
             System.out.println("There has been an error for the address: " + address);
-            System.out.println(str);
+            System.out.println(prettyAddress);
+            errors += prettyAddress;
             return;
         } else {
         }
@@ -441,7 +454,7 @@ public class XJH {
         System.out.print("Enter any key to continue: ");
         try {
             System.in.read();
-        } catch (Exception e) {
+        } catch (IOException e) {
         }
     }
 }
