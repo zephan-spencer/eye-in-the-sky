@@ -30,7 +30,6 @@ public class XJH {
     static String location;
     static String contactCSV = "";
     static String leadCSV = "";
-    static String userName = "";
     static String line = "";
     static String cvsSplitBy = ",";
     static String errors;
@@ -54,14 +53,11 @@ public class XJH {
     static char quotes = '"';
 
     public static void main(String[] args) throws Exception {
-            System.out.println("Welcome to the Eye in the Sky map generator Version 1.0");
+            System.out.println("Welcome to the Eye in the Sky map generator Version 1.1");
             pressAnyKey();
             init();
-            System.out.println("Please enter your username as it appears under C:\\Users");
-            System.out.println("Also, please make sure that the CSV files are inside the download folder. They must be named contact.csv and lead.csv");
-            userName = mainScanner.nextLine();
-            contactCSV = "/Users/" + userName + "/Downloads/contact.csv";
-            leadCSV = "/Users/" + userName + "/Downloads/lead.csv";
+            contactCSV = "People/contact.csv";
+            leadCSV = "People/lead.csv";
             System.out.println("Would you like to create a new file? Yes/No");
             if (mainScanner.hasNext("yes") || mainScanner.hasNext("Yes")) {
                 GlobalVariables.newFile = true;
