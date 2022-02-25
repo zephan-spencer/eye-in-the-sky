@@ -131,3 +131,4 @@ dmypy.json
 # My Stuff
 data/*
 save_temp/*
+*.csv
