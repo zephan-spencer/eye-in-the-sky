@@ -236,18 +236,42 @@ class EnhancedGeoMapper:
             zoom_start=self.config['zoom_start']
         )
         
-        # Add marker clustering with adjusted settings for fewer, larger clusters
-        self.marker_cluster = MarkerCluster(
-            name="Contact Clusters",
-            overlay=True,
-            control=True,
-            icon_create_function=None,
-            options={
-                'disableClusteringAtZoom': 10,  # Stop clustering at zoom level 10
-                'maxClusterRadius': 80,         # Larger radius means fewer clusters
-                'spiderfyDistanceMultiplier': 2 # More spacing when spiderfying
-            }
-        ).add_to(self.map)
+        # Create separate feature groups for each category with clustering
+        self.category_groups = {}
+        categories = [
+            'Workers Comp',
+            'WC Client', 
+            'Client',
+            'Medical Professional',
+            'Good Progress',
+            'Amputee',
+            'Prosthetist',
+            'Multiple People',
+            'Other'
+        ]
+        
+        for category in categories:
+            # Create a feature group for this category
+            feature_group = folium.FeatureGroup(name=category, overlay=True, control=True)
+            
+            # Add marker clustering to each feature group
+            marker_cluster = MarkerCluster(
+                name=f"{category} Cluster",
+                overlay=False,
+                control=False,
+                options={
+                    'disableClusteringAtZoom': 10,
+                    'maxClusterRadius': 80,
+                    'spiderfyDistanceMultiplier': 2
+                }
+            )
+            marker_cluster.add_to(feature_group)
+            feature_group.add_to(self.map)
+            
+            self.category_groups[category] = marker_cluster
+        
+        # Add layer control to toggle categories
+        folium.LayerControl(position='topright', collapsed=False).add_to(self.map)
         
         # Coordinate management for duplicate locations
         self.coordinate_groups = defaultdict(list)  # Groups people by coordinate
@@ -511,36 +535,44 @@ class EnhancedGeoMapper:
         return cleaned if cleaned else street
     
     def get_marker_style(self, status):
-        """Get marker color and icon based on status"""
+        """Get marker color, icon, and category based on status"""
         icon_color = "white"
         
         if status == "Workers Comp":
             color = "red"
             icon = "star"
+            category = "Workers Comp"
         elif status == "WC Client":
             color = "orange"
             icon = "dollar"
+            category = "WC Client"
         elif "Client" in status:
             color = "green"
             icon = "dollar"
+            category = "Client"
         elif status in ["Nurse Case Manager", "Doctor", "Therapist"]:
             color = "purple"
             icon = "medkit"
+            category = "Medical Professional"
         elif status in ["Amputee - good progress", "Potential Client"]:
             color = "darkpurple"
             icon = "thumbs-up"
+            category = "Good Progress"
         elif status == "Amputee":
             color = "red"
             icon = "user"
             icon_color = "white"
+            category = "Amputee"
         elif status == "Prosthetist":
             color = "blue"
             icon = "wrench"
+            category = "Prosthetist"
         else:
             color = "gray"
             icon = "info-sign"
+            category = "Other"
         
-        return color, icon, icon_color
+        return color, icon, icon_color, category
     
     def _round_coordinates(self, lat, lon, precision=2):
         """Round coordinates to detect duplicates (city-level geocoding)"""
@@ -627,15 +659,17 @@ class EnhancedGeoMapper:
         
         popup_content += "</div>"
         
-        color, icon, icon_color = self.get_marker_style(status)
+        color, icon, icon_color, category = self.get_marker_style(status)
         
-        # Add marker to cluster
+        # Add marker to the appropriate category cluster
+        target_cluster = self.category_groups.get(category, self.category_groups['Other'])
+        
         folium.Marker(
             location=[offset_lat, offset_lon],
             popup=folium.Popup(popup_content, max_width=400),
             icon=folium.Icon(color=color, icon=icon, icon_color=icon_color, prefix='fa'),
             tooltip=f"{first_name} {last_name} ({status})"
-        ).add_to(self.marker_cluster)
+        ).add_to(target_cluster)
     
     def process_contacts(self, csv_file='Contacts_2025_05_29.csv', test_limit=None):
         """Process contacts from CSV file"""
@@ -807,7 +841,7 @@ class EnhancedGeoMapper:
                 # Create a summary popup
                 popup_content = self._create_grouped_popup(coord_key)
                 
-                # Create a special summary marker - ADD TO CLUSTER, not directly to map
+                # Create a special summary marker in the "Multiple People" category
                 folium.Marker(
                     location=[base_lat, base_lon],
                     popup=folium.Popup(popup_content, max_width=500),
@@ -818,7 +852,7 @@ class EnhancedGeoMapper:
                         prefix='fa'
                     ),
                     tooltip=f"📍 {len(people)} people at this location"
-                ).add_to(self.marker_cluster)  # Changed from self.map to self.marker_cluster
+                ).add_to(self.category_groups['Multiple People'])
                 
                 summary_count += 1
         
@@ -860,10 +894,10 @@ class EnhancedGeoMapper:
         """Add a legend to the map"""
         legend_html = '''
         <div style="position: fixed; 
-                    bottom: 50px; left: 50px; width: 280px; height: auto; 
+                    bottom: 50px; left: 50px; width: 320px; height: auto; 
                     background-color: white; border:2px solid grey; z-index:9999; 
                     font-size:16px; padding: 20px; border-radius: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <h4 style="margin-top: 0; margin-bottom: 15px; color: #333; font-size: 18px;">Contact Legend</h4>
+        <h4 style="margin-top: 0; margin-bottom: 15px; color: #333; font-size: 18px;">📍 Contact Legend</h4>
         <div style="margin-bottom: 8px; font-size: 15px;"><i class="fa fa-star" style="color:red; width: 20px; font-size: 16px;"></i> Workers Comp</div>
         <div style="margin-bottom: 8px; font-size: 15px;"><i class="fa fa-dollar" style="color:orange; width: 20px; font-size: 16px;"></i> WC Client</div>
         <div style="margin-bottom: 8px; font-size: 15px;"><i class="fa fa-dollar" style="color:green; width: 20px; font-size: 16px;"></i> Client</div>
@@ -873,9 +907,13 @@ class EnhancedGeoMapper:
         <div style="margin-bottom: 8px; font-size: 15px;"><i class="fa fa-wrench" style="color:blue; width: 20px; font-size: 16px;"></i> Prosthetist</div>
         <div style="margin-bottom: 8px; font-size: 15px;"><i class="fa fa-info-circle" style="color:gray; width: 20px; font-size: 16px;"></i> Other</div>
         <hr style="margin: 15px 0;">
-        <div style="margin-bottom: 8px; font-size: 15px;"><i class="fa fa-users" style="color:darkred; width: 20px; font-size: 16px;"></i> Multiple people (location summary)</div>
-        <p style="margin: 12px 0 0 0; font-size: 13px; color: #666;">
-            Markers are clustered automatically. Individual markers are slightly offset when multiple people share the same location.
+        <div style="margin-bottom: 8px; font-size: 15px;"><i class="fa fa-users" style="color:darkred; width: 20px; font-size: 16px;"></i> Multiple People</div>
+        <hr style="margin: 15px 0;">
+        <p style="margin: 0 0 10px 0; font-size: 14px; color: #2c5234; font-weight: bold;">
+            💡 Use the layer control (top-right) to toggle categories on/off
+        </p>
+        <p style="margin: 0; font-size: 13px; color: #666;">
+            Markers are clustered automatically. Individual markers are offset when multiple people share the same location.
         </p>
         </div>
         '''
