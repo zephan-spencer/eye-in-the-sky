@@ -1,0 +1,45 @@
+{
+  "api_settings": {
+    "delay_between_calls": 1.5,
+    "timeout_seconds": 15,
+    "max_retries": 2,
+    "user_agent": "EnhancedGeoMapper"
+  },
+  "map_settings": {
+    "center_latitude": 40,
+    "center_longitude": -95,
+    "zoom_start": 4,
+    "output_file": "enhanced_map.html"
+  },
+  "file_settings": {
+    "cache_file": "geocode_cache.json",
+    "log_file": "geocoding.log",
+    "input_files": [
+      "Contacts_2025_05_29.csv",
+      "Leads_2025_06_03.csv"
+    ],
+    "contacts_csv": "Contacts_2025_05_29.csv"
+  },
+  "processing_settings": {
+    "test_limit": null,
+    "verbose_logging": false
+  },
+  "marker_styles": {
+    "Workers Comp": {"color": "red", "icon": "star"},
+    "WC Client": {"color": "orange", "icon": "dollar"},
+    "Client": {"color": "green", "icon": "dollar"},
+    "Nurse Case Manager": {"color": "purple", "icon": "medkit"},
+    "Doctor": {"color": "purple", "icon": "medkit"},
+    "Therapist": {"color": "purple", "icon": "medkit"},
+    "Amputee - good progress": {"color": "darkpurple", "icon": "thumbs-up"},
+    "Potential Client": {"color": "darkpurple", "icon": "thumbs-up"},
+    "Amputee": {"color": "lightblue", "icon": "question"},
+    "Prosthetist": {"color": "blue", "icon": "wrench"},
+    "default": {"color": "gray", "icon": "info-sign"}
+  },
+  "address_cleaning": {
+    "expand_abbreviations": true,
+    "remove_apartment_info": true,
+    "standardize_directionals": true
+  }
+}
