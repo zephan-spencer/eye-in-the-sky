@@ -15,10 +15,10 @@
     "cache_file": "geocode_cache.json",
     "log_file": "geocoding.log",
     "input_files": [
-      "Contacts_2025_05_29.csv",
-      "Leads_2025_06_03.csv"
+      "Contacts_2026_01_10.csv",
+      "Leads_2026_01_10.csv"
     ],
-    "contacts_csv": "Contacts_2025_05_29.csv"
+    "contacts_csv": "Contacts_2026_01_10.csv"
   },
   "processing_settings": {
     "test_limit": null,

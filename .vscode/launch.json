@@ -8,7 +8,7 @@
             "name": "Geo",
             "type": "python",
             "request": "launch",
-            "program": "parser.py",
+            "program": "geocoder.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }

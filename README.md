@@ -1,6 +1,6 @@
-# Enhanced Eye in the Sky - Geocoding Map Generator
+# Eye in the Sky - Geocoding Map Generator
 
-An intelligent mapping application that creates interactive maps from CSV contact data with advanced features including geocoding cache, address preprocessing, and rate limiting management.
+An intelligent mapping application that creates interactive maps from CSV contact data with advanced features including geocoding cache, address preprocessing, and rate limiting management. Now supports multiple data sources through JSON column mapping configuration.
 
 ## Features
 
@@ -11,6 +11,9 @@ An intelligent mapping application that creates interactive maps from CSV contac
 - **Incremental Updates**: Only geocodes new/changed addresses
 - **Error Handling**: Robust error handling with retry logic
 - **Comprehensive Logging**: Detailed logs of all operations
+- **JSON Column Mapping**: Process multiple CSV sources with different column structures
+- **Multi-Source Support**: Automatically processes Contacts and Leads into a unified map
+- **File Processing Summary**: Displays summary of all files processed at completion
 
 ### 📊 **Smart Address Processing**
 - Standardizes street abbreviations (St. → Street, Ave. → Avenue)
@@ -35,6 +38,10 @@ pip install pandas folium geopy
 
 ### 2. Run with Default Settings
 ```bash
+# Run the main geocoder (processes both Contacts and Leads)
+python geocoder.py
+
+# Or use the CLI interface
 python map_cli.py
 ```
 
@@ -89,13 +96,15 @@ Edit `config.json` to customize behavior:
 
 ```
 eye-in-the-sky/
-├── enhanced_parser.py      # Main enhanced mapping logic
-├── map_cli.py             # Command-line interface
-├── config.json           # Configuration settings
-├── Contacts_2025_05_29.csv # Your contact data
-├── geocode_cache.json    # Cached geocoding results (auto-generated)
-├── geocoding.log         # Processing logs (auto-generated)
-└── enhanced_map.html     # Generated map (auto-generated)
+├── geocoder.py              # Main geocoding and mapping logic
+├── column_mappings.json     # JSON column mapping configuration
+├── map_cli.py               # Command-line interface
+├── config.json              # Configuration settings
+├── Contacts_2025_05_29.csv  # Contact data
+├── Leads_2025_05_29.csv     # Lead data (optional, auto-detected)
+├── geocode_cache.json       # Cached geocoding results (auto-generated)
+├── geocoding.log            # Processing logs (auto-generated)
+└── enhanced_map.html        # Generated map (auto-generated)
 ```
 
 ## Understanding the Cache System
@@ -150,18 +159,29 @@ The geocoding cache (`geocode_cache.json`) stores previously geocoded addresses 
 
 ## CSV File Requirements
 
-Your CSV should have these columns (exact names):
-- `First Name`
-- `Last Name`  
-- `Email`
-- `Phone`
-- `Mailing Street`
-- `Mailing City`
-- `Mailing State`
-- `ID/Status`
+The system supports multiple CSV formats and automatically detects and processes them based on the `column_mappings.json` configuration.
 
-Optional columns:
-- `Mailing Zip`
+### Supported File Types
+
+**Contacts CSV** (e.g., `Contacts_2026_01_10.csv`):
+- `First Name`, `Last Name`
+- `Email`, `Phone`
+- `ID/Status`
+- `Mailing Street`, `Mailing City`, `Mailing State`, `Mailing Zip`, `Mailing Country`
+
+**Leads CSV** (e.g., `Leads_2026_01_10.csv`):
+- `First Name`, `Last Name`
+- `Email`, `Phone`
+- `ID/Status`
+- `Street`, `City`, `State`, `Country`
+
+### Required Fields
+At minimum, each record must have:
+- `first_name` or `last_name`
+- `city` (used for geocoding)
+- `status` (for marker categorization)
+
+All other fields are optional.
 
 ## Statistics and Monitoring
 
@@ -184,6 +204,68 @@ Modify `address_cleaning` settings to adjust how addresses are preprocessed.
 
 ### API Settings
 Adjust `api_settings` to work with different geocoding services or account limits.
+
+## Column Mapping Configuration
+
+The `column_mappings.json` file allows you to map different CSV column names to a standardized internal format. This enables the system to process multiple CSV sources with different column structures into a single unified map.
+
+### Configuration Format
+```json
+{
+  "sources": {
+    "contacts": {
+      "file_pattern": "Contacts_*.csv",
+      "columns": {
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "ID/Status",
+        "street": "Mailing Street",
+        "city": "Mailing City",
+        "state": "Mailing State",
+        "zip": "Mailing Zip",
+        "country": "Mailing Country"
+      }
+    },
+    "leads": {
+      "file_pattern": "Leads_*.csv",
+      "columns": {
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "ID/Status",
+        "street": "Street",
+        "city": "City",
+        "state": "State",
+        "zip": null,
+        "country": "Country"
+      }
+    }
+  }
+}
+```
+
+### Adding New Data Sources
+To add a new CSV source type:
+1. Add a new entry under `sources` in `column_mappings.json`
+2. Specify the `file_pattern` to match your CSV files (e.g., "Customers_*.csv")
+3. Map each standard field to your CSV's column names
+4. Set any unused fields to `null`
+
+### File Processing Summary
+At the end of execution, a summary shows all files processed:
+```
+============================================================
+FILES PROCESSED SUMMARY
+============================================================
+  Contacts_2026_01_10.csv                  (contacts  ) -   150 records
+  Leads_2026_01_10.csv                     (leads     ) -   892 records
+------------------------------------------------------------
+  TOTAL                                                 -  1042 records
+============================================================
+```
 
 ## License
 
